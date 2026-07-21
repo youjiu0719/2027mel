@@ -244,6 +244,73 @@
     }
     .student-card h3{margin:0;text-transform:capitalize}
     .student-card p{margin:4px 0 0;color:var(--muted);font-size:.9rem}
+
+    .filter-group{margin-bottom:22px}
+    .filter-label{
+      display:block;
+      margin-bottom:10px;
+      color:var(--muted);
+      font-size:.82rem;
+      font-weight:800;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+    }
+    .filter-row{display:flex;flex-wrap:wrap;gap:10px}
+    .filter-btn.topic.active{
+      background:var(--gold);
+      border-color:var(--gold);
+      color:#18201d;
+    }
+    .profile-avatar{
+      width:76px;
+      height:76px;
+      border-radius:50%;
+      object-fit:cover;
+      display:block;
+      border:3px solid #fff;
+      box-shadow:0 6px 20px rgba(33,45,39,.16);
+      background:var(--green);
+      color:#fff;
+    }
+    .avatar-fallback{
+      width:76px;
+      height:76px;
+      border-radius:50%;
+      display:grid;
+      place-items:center;
+      background:var(--green);
+      color:#fff;
+      font-size:1.5rem;
+      font-weight:900;
+      border:3px solid #fff;
+      box-shadow:0 6px 20px rgba(33,45,39,.16);
+    }
+    .student-card{
+      cursor:pointer;
+      transition:.22s ease;
+    }
+    .student-card:hover{transform:translateY(-4px)}
+    .student-card .bio{
+      min-height:72px;
+      margin:12px 0 14px;
+      color:var(--muted);
+      font-size:.9rem;
+    }
+    .student-card .hashtags{
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+      margin-top:12px;
+    }
+    .student-card .hashtags span{
+      font-size:.75rem;
+      padding:4px 8px;
+      border-radius:999px;
+      background:#efe9dc;
+      color:#5f594f;
+    }
+    .student-card.official .avatar-fallback{background:#232826}
+
     footer{padding:50px 0;text-align:center;color:var(--muted);font-size:.9rem}
     @media(max-width:900px){
       .intro-grid,.projects{grid-template-columns:1fr 1fr}
@@ -309,9 +376,16 @@
       <div class="wrap">
         <div class="section-head">
           <h2>Student Film Showcase</h2>
-          <p>依主題瀏覽完整旅程，或點選學生姓名，只觀看該位學生完成的影片。</p>
+          <p>先選擇景點／主題查看不同學生的作品，也可以再點選學生姓名，查看個人完成的影片。</p>
         </div>
-        <div class="filters" id="filters"></div>
+        <div class="filter-group">
+          <span class="filter-label">依景點／主題瀏覽</span>
+          <div class="filter-row" id="topicFilters"></div>
+        </div>
+        <div class="filter-group">
+          <span class="filter-label">依學生瀏覽</span>
+          <div class="filter-row" id="studentFilters"></div>
+        </div>
         <div class="projects" id="projects"></div>
       </div>
     </section>
@@ -337,9 +411,22 @@
       1. YouTube Shorts 會直接轉為內嵌播放器。
       2. Instagram 公開 Reel／貼文可設定 platform:"instagram" 並貼上公開網址。
       3. 每完成一部影片，就新增一筆作品資料；未完成項目不顯示空白卡片。
+      4. 學生頭像請放入 images 資料夾，檔名如 amy.jpg；沒有圖片時會自動顯示姓名首字母。
+      5. studentProfiles 可修改每位學生的介紹與 hashtags。
     */
 
-    const students = ["Amy","Sasa","Eric","Louis","Frankie","Phoebe","Lawrence","Eason","Official"];
+    const studentProfiles = [
+      {name:"Amy", bio:"善於捕捉空間與畫面細節，作品呈現她對城市藝術與文化場域的觀察。", hashtags:["#CityObserver","#ArtAndCulture","#StudentEditor"], avatar:"images/amy.jpg"},
+      {name:"Sasa", bio:"從實際任務中整理步驟與重點，用影像記錄合作和學習的過程。", hashtags:["#LearningByDoing","#Teamwork","#StudentEditor"], avatar:"images/sasa.jpg"},
+      {name:"Eric", bio:"重視資訊與敘事順序，嘗試把參訪內容轉化成清楚易懂的影片。", hashtags:["#ClearStorytelling","#MelbourneLearning","#StudentEditor"], avatar:"images/eric.jpg"},
+      {name:"Louis", bio:"以生活化視角記錄行程，讓觀眾感受到活動中的節奏與真實互動。", hashtags:["#DailyMoments","#LearningJourney","#StudentEditor"], avatar:"images/louis.jpg"},
+      {name:"Frankie", bio:"透過拍攝與剪輯重新整理活動流程，展現自己的觀察與表達方式。", hashtags:["#CreativeProcess","#HandsOnLearning","#StudentEditor"], avatar:"images/frankie.jpg"},
+      {name:"Phoebe", bio:"對互動媒體與視覺內容有敏銳觀察，作品帶有清楚的個人視角。", hashtags:["#DigitalStorytelling","#ACMI","#StudentEditor"], avatar:"images/phoebe.jpg"},
+      {name:"Lawrence", bio:"持續參與城市探索與影像任務，逐步累積觀察、拍攝與表達經驗。", hashtags:["#CityExploration","#LearningInProgress","#Melbourne2026"], avatar:"images/lawrence.jpg"},
+      {name:"Eason", bio:"能從實作任務中抓住重要片段，透過簡潔剪輯呈現學習重點。", hashtags:["#HandsOnExperience","#YoungCreator","#StudentEditor"], avatar:"images/eason.jpg"},
+      {name:"Official", bio:"由帶隊老師整理製作，補充旅程整體脈絡與共同學習紀錄。", hashtags:["#OfficialFilm","#MelbourneStudyTour","#DaliStudy"], avatar:"images/official.jpg"}
+    ];
+    const students = studentProfiles.map(p=>p.name);
 
     const works = [
       { student:"Louis", topic:"Cooking Training", title:"Cooking Training", desc:"在餐旅訓練中練習合作、流程與表達。", videoUrl:"https://youtube.com/shorts/JLW8rfcw7_I?feature=share", platform:"youtube", tone:7 },
@@ -360,21 +447,38 @@
       "University of Melbourne","RMIT","Cooking Training","Wood Workshop"
     ];
 
-    const filters = document.getElementById("filters");
+    const topicFilters = document.getElementById("topicFilters");
+    const studentFilters = document.getElementById("studentFilters");
     const projects = document.getElementById("projects");
     const studentGrid = document.getElementById("studentGrid");
-    let active = "All";
+    let activeStudent = "All";
+    let activeTopic = "All";
 
     function renderFilters(){
-      const options = ["All", ...students];
-      filters.innerHTML = options.map(name =>
-        `<button class="filter-btn ${active===name ? "active":""}" data-name="${name}">
-          ${name==="All" ? "全部作品" : (name==="Official" ? "官方影片" : name)}
+      const availableTopics = topicOrder.filter(topic => works.some(w=>w.topic===topic));
+      topicFilters.innerHTML = ["All", ...availableTopics].map(topic =>
+        `<button class="filter-btn topic ${activeTopic===topic ? "active":""}" data-topic="${topic}">
+          ${topic==="All" ? "全部景點" : topic}
         </button>`
       ).join("");
-      document.querySelectorAll(".filter-btn").forEach(btn=>{
+
+      studentFilters.innerHTML = ["All", ...students].map(name =>
+        `<button class="filter-btn ${activeStudent===name ? "active":""}" data-student="${name}">
+          ${name==="All" ? "全部學生" : (name==="Official" ? "官方影片" : name)}
+        </button>`
+      ).join("");
+
+      document.querySelectorAll("[data-topic]").forEach(btn=>{
         btn.addEventListener("click",()=>{
-          active = btn.dataset.name;
+          activeTopic = btn.dataset.topic;
+          renderFilters();
+          renderWorks();
+        });
+      });
+
+      document.querySelectorAll("#studentFilters [data-student]").forEach(btn=>{
+        btn.addEventListener("click",()=>{
+          activeStudent = btn.dataset.student;
           renderFilters();
           renderWorks();
         });
@@ -427,10 +531,13 @@
     }
 
     function renderWorks(){
-      const filtered = active==="All" ? works : works.filter(w=>w.student===active);
+      const filtered = works.filter(w =>
+        (activeStudent==="All" || w.student===activeStudent) &&
+        (activeTopic==="All" || w.topic===activeTopic)
+      );
       const sorted = [...filtered].sort((a,b)=>topicOrder.indexOf(a.topic)-topicOrder.indexOf(b.topic));
       if(!sorted.length){
-        projects.innerHTML = `<div class="empty">目前尚未放入這位學生的影片。</div>`;
+        projects.innerHTML = `<div class="empty">目前沒有符合這個篩選條件的影片。</div>`;
         return;
       }
       projects.innerHTML = sorted.map((w,i)=>`
@@ -451,21 +558,31 @@
     }
 
     function renderStudents(){
-      studentGrid.innerHTML = students.map(name=>{
-        const count = works.filter(w=>w.student===name).length;
+      studentGrid.innerHTML = studentProfiles.map(profile=>{
+        const count = works.filter(w=>w.student===profile.name).length;
+        const displayName = profile.name==="Official" ? "官方影片" : profile.name;
         return `
-          <a href="#showcase" class="student-card" data-student="${name}">
-            <div class="initial">${name.charAt(0)}</div>
-            <h3>${name==="Official" ? "官方影片" : name}</h3>
-            <p>${count} 部作品 · 點擊查看</p>
-          </a>
+          <article class="student-card ${profile.name==="Official" ? "official":""}" data-student-card="${profile.name}">
+            <img class="profile-avatar"
+                 src="${profile.avatar}"
+                 alt="${displayName}"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='grid';">
+            <div class="avatar-fallback" style="display:none">${profile.name.charAt(0)}</div>
+            <h3>${displayName}</h3>
+            <p>${count} 部作品</p>
+            <div class="bio">${profile.bio}</div>
+            <div class="hashtags">${profile.hashtags.map(tag=>`<span>${tag}</span>`).join("")}</div>
+          </article>
         `;
       }).join("");
-      document.querySelectorAll(".student-card").forEach(card=>{
+
+      document.querySelectorAll("[data-student-card]").forEach(card=>{
         card.addEventListener("click",()=>{
-          active = card.dataset.student;
+          activeStudent = card.dataset.studentCard;
+          activeTopic = "All";
           renderFilters();
           renderWorks();
+          document.getElementById("showcase").scrollIntoView({behavior:"smooth"});
         });
       });
     }
