@@ -59,7 +59,7 @@ function renderCreators(){const names=[...new Set(works.filter(w=>w.student!=='O
 renderFilters();renderFilms();renderCreators();
 
 const day1Config={
-  folder:'days/01_ACMI',
+  folder:'days/01-acmi',
   students:['Amy','Eric','Louis','Lawrence','Sasa','Frankie','Eason','Phoebe'],
   maxPhotos:12
 };
@@ -71,7 +71,7 @@ async function findStudentPhotos(student){
     const num=String(i).padStart(2,'0');
     let hit=null;
     for(const ext of imageExtensions){
-      hit=await loadImage(`${day1Config.folder}/${student}_${num}.${ext}`);
+      hit=await loadImage(`${day1Config.folder}/${student.toLowerCase()}_${num}.${ext}`);
       if(hit)break;
     }
     if(hit) found.push(hit);
@@ -80,7 +80,7 @@ async function findStudentPhotos(student){
 }
 async function fetchReflection(student){
   try{
-    const r=await fetch(`${day1Config.folder}/${student}.txt`,{cache:'no-store'});
+    const r=await fetch(`${day1Config.folder}/${student.toLowerCase()}.txt`,{cache:'no-store'});
     if(!r.ok)return '';
     return (await r.text()).trim();
   }catch(e){return '';}
@@ -105,7 +105,7 @@ async function renderDay1(){
     const [photos,text]=await Promise.all([findStudentPhotos(student),fetchReflection(student)]);
     if(photos.length&&text)records.push({student,photos,text});
   }
-  target.innerHTML=records.length?records.map(r=>reflectionCard(r.student,r.photos,r.text)).join(''):'<div class="reflection-empty">尚未找到資料。請把檔案放進 <strong>days/01_ACMI/</strong>，例如 <strong>Eric_01.jpg</strong> 與 <strong>Eric.txt</strong>。此功能需透過 GitHub Pages 網址查看。</div>';
+  target.innerHTML=records.length?records.map(r=>reflectionCard(r.student,r.photos,r.text)).join(''):'<div class="reflection-empty">尚未找到資料。請把檔案放進 <strong>days/01-acmi/</strong>，例如 <strong>eric_01.jpg</strong> 與 <strong>eric.txt</strong>。此功能需透過 GitHub Pages 網址查看。</div>';
   initSliders();
 }
 renderDay1();
