@@ -100,7 +100,7 @@ async function buildDaySection(folderItem){
   }
   const photoMap={},txtSet=new Set();
   for(const name of files){
-    const mImg=name.match(/^([a-z0-9]+)(?:_(\d{1,2}))?\.(jpe?g|png|webp)$/i);
+    const mImg=name.match(/^([a-zA-Z]+)\D*?(\d{1,2})?\D*\.(jpe?g|png|webp)$/i);
     if(mImg){const key=mImg[1].toLowerCase(),num=mImg[2]?parseInt(mImg[2],10):0;(photoMap[key]=photoMap[key]||[]).push({num,url:`${dayPath}/${name}`});continue;}
     const mTxt=name.match(/^([a-z0-9]+)\.txt$/i);
     if(mTxt&&mTxt[1].toLowerCase()!=='title')txtSet.add(mTxt[1].toLowerCase());
