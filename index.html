@@ -54,17 +54,17 @@ const works=[
 {student:'Official',topic:'Official',title:'Melbourne Journey',id:'PQ-xrloySx0',desc:'由帶隊老師整理的旅程共同紀錄。'},
 {student:'Eric',topic:'City',title:'State Library Victoria',id:'Tqnz8Op37Qw',desc:'把圖書館的歷史與空間整理成自己的英文故事。'},
 {student:'Amy',topic:'Media',title:'ACMI',id:'5rKX6YnLAXY',desc:'從展覽觀察出發，選擇素材並完成影片。'},
-{student:'Eric',topic:'City',title:'Melbourne Uni',id:'ytDU1QmET0w',desc:'走進校園，記錄第一次踏進墨爾本大學的所見所感。'},
-{student:'Eric',topic:'City',title:'Market',id:'-CYxembBuyQ',desc:'穿梭在 Queen Victoria Market 裡，捕捉市場的日常畫面。'},
-{student:'Eric',topic:'City',title:'RMIT',id:'HN45B6gle14',desc:'用鏡頭記錄 RMIT 校園裡讓人驚豔的建築細節。'},
-{student:'Sasa',topic:'Media',title:'ACMI',id:'OEn79kznF7U',desc:'從展覽出發，記錄自己對動畫與影像創作的觀察。'},
-{student:'Sasa',topic:'Art',title:'NGV & Hosier Lane',id:'Y-7WuzJ_6XY',desc:'從美術館到塗鴉街，記錄兩種截然不同的藝術樣貌。'}
+{student:'Eric',topic:'City',title:'Melbourne Uni',id:'ytDU1QmET0w',desc:'走進校園，記錄第一次踏進墨爾本大學的所見所感。',verified:true},
+{student:'Eric',topic:'City',title:'Market',id:'-CYxembBuyQ',desc:'穿梭在 Queen Victoria Market 裡，捕捉市場的日常畫面。',verified:true},
+{student:'Eric',topic:'City',title:'RMIT',id:'HN45B6gle14',desc:'用鏡頭記錄 RMIT 校園裡讓人驚豔的建築細節。',verified:true},
+{student:'Sasa',topic:'Media',title:'ACMI',id:'OEn79kznF7U',desc:'從展覽出發，記錄自己對動畫與影像創作的觀察。',verified:true},
+{student:'Sasa',topic:'Art',title:'NGV & Hosier Lane',id:'Y-7WuzJ_6XY',desc:'從美術館到塗鴉街，記錄兩種截然不同的藝術樣貌。',verified:true}
 ];
 const filmGrid=document.querySelector('#filmGrid'),filters=document.querySelector('#filters'),creatorGrid=document.querySelector('#creatorGrid');
 let active='All';const topics=['All',...new Set(works.map(x=>x.topic))];
 function renderFilters(){if(!FILMS_READY){filters.innerHTML='';return;}filters.innerHTML=topics.map(t=>`<button class="filter ${active===t?'active':''}" data-topic="${t}">${t}</button>`).join('');document.querySelectorAll('[data-topic]').forEach(b=>b.onclick=()=>{active=b.dataset.topic;renderFilters();renderFilms();});}
-function renderFilms(){if(!FILMS_READY){filmGrid.innerHTML='<div class="reflection-empty" style="grid-column:1/-1">作品集更新中</div>';return;}const list=active==='All'?works:works.filter(x=>x.topic===active);filmGrid.innerHTML=list.map(w=>`<article class="film"><div class="frame"><iframe loading="lazy" src="https://www.youtube.com/embed/${w.id}" title="${w.title} by ${w.student}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div><div class="film-info"><div class="film-meta"><strong>${w.student==='Official'?'Official Film':w.student}</strong><span>${w.topic}</span></div><h3>${w.title}</h3><p>${w.desc}</p><div class="skills"><span class="skill">Observation</span><span class="skill">Storytelling</span><span class="skill">English</span><span class="skill">Editing</span></div></div></article>`).join('');}
-function renderCreators(){const names=[...new Set(works.filter(w=>w.student!=='Official').map(w=>w.student))];creatorGrid.innerHTML=names.map(n=>{const ws=works.filter(w=>w.student===n);return `<article class="creator"><div class="avatar">${n[0]}</div><h3>${n}</h3><p>${ws.length} ${ws.length===1?'film':'films'}</p><strong>${[...new Set(ws.map(w=>w.title))].join(' · ')}</strong></article>`}).join('');}
+function renderFilms(){if(!FILMS_READY){filmGrid.innerHTML='<div class="reflection-empty" style="grid-column:1/-1">作品集更新中</div>';return;}const list=active==='All'?works:works.filter(x=>x.topic===active);filmGrid.innerHTML=list.map(w=>`<article class="film"><div class="frame"><iframe loading="lazy" src="https://www.youtube.com/embed/${w.id}" title="${w.verified?`${w.title} by ${w.student}`:'Melbourne Journey'}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>${w.verified?`<div class="film-info"><div class="film-meta"><strong>${w.student==='Official'?'Official Film':w.student}</strong><span>${w.topic}</span></div><h3>${w.title}</h3><p>${w.desc}</p><div class="skills"><span class="skill">Observation</span><span class="skill">Storytelling</span><span class="skill">English</span><span class="skill">Editing</span></div></div>`:`<div class="film-info"><p style="color:var(--muted)">影片整理中</p></div>`}</article>`).join('');}
+function renderCreators(){const names=[...new Set(works.filter(w=>w.student!=='Official').map(w=>w.student))];creatorGrid.innerHTML=names.map(n=>{const ws=works.filter(w=>w.student===n);const verifiedTitles=[...new Set(ws.filter(w=>w.verified).map(w=>w.title))];return `<article class="creator"><div class="avatar">${n[0]}</div><h3>${n}</h3><p>${ws.length} ${ws.length===1?'film':'films'}</p><strong>${verifiedTitles.length?verifiedTitles.join(' · '):'影片整理中'}</strong></article>`}).join('');}
 renderFilters();renderFilms();renderCreators();
 
 const REPO_OWNER='youjiu0719';
