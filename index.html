@@ -41,6 +41,7 @@ section{padding:92px 0}.section-kicker{color:var(--accent);font-size:.78rem;lett
 </main>
 <footer class="footer"><div class="wrap"><span>DALI STUDY · Melbourne Student Film Showcase 2026</span><span>Observe · Think · Create</span></div></footer>
 <script>
+const studentPhotoMap={};
 const FILMS_READY=true;
 const works=[
 {student:'Louis',topic:'Cooking',title:'Cooking Training',id:'JLW8rfcw7_I',desc:'從餐旅實作中記錄合作、流程與現場節奏。'},
@@ -83,7 +84,6 @@ function renderCreators(){const names=[...new Set(works.filter(w=>w.student!=='O
 renderFilters();renderFilms();renderCreators();
 
 const REPO_OWNER='youjiu0719';
-const studentPhotoMap={};
 const REPO_NAME='2027mel';
 const REPO_BRANCH='main';
 
