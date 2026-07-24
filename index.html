@@ -29,7 +29,7 @@ section{padding:92px 0}.section-kicker{color:var(--accent);font-size:.78rem;lett
 <header class="hero" id="top"><div class="wrap"><div class="eyebrow">Melbourne · 2026 Student Showcase</div><h1>Every story begins with observation.</h1><p>觀察、思考、執行。學生從城市裡尋找素材，透過日記整理想法，再用英文旁白與剪輯完成自己的故事。</p><div class="hero-actions"><a class="btn" href="#films">▶ Watch the Films</a><a class="btn ghost" href="#behind">Behind the Films</a></div></div></header>
 <main>
 <section id="films"><div class="wrap"><div class="film-toolbar"><div><div class="section-kicker">Featured Films</div><h2 class="section-title">Student films, first.</h2><p class="section-copy">網站以學生完成的影片為主角。每一部作品，都是一次觀察、選擇與表達。</p></div><div class="filters" id="filters"></div></div><div class="film-grid" id="filmGrid"></div></div></section>
-<section class="day-journal" id="day1"><div class="wrap"><div class="day-head"><div><div class="day-tag">Day 01 · ACMI</div><h2 class="section-title">What caught their attention?</h2></div><p class="day-note">每位學生的照片會自動輪播，下面顯示同名文字檔中的當日心得。</p></div><div class="reflection-grid" id="day1Reflections"><div class="reflection-empty">正在讀取 Day 1 學生照片與心得⋯</div></div></div></section>
+<div id="daysContainer"><section class="day-journal"><div class="wrap"><div class="reflection-empty">正在讀取所有天數的照片與心得⋯</div></div></section></div>
 <section class="learning" id="learning"><div class="wrap"><div class="section-kicker">How We Learn</div><h2 class="section-title">Observe. Think. Create.</h2><p class="section-copy">老師先提供方向，學生從現場觀察出發；年紀較大的學生，也會延伸出不同想法。日記不是附加作業，而是把觀察整理成影片內容的重要工具。</p><div class="learning-grid"><article class="learn"><span class="num">01</span><div><h3>Observe</h3><p>停下來看見環境、人物、構圖與值得記錄的瞬間。</p></div></article><article class="learn"><span class="num">02</span><div><h3>Think</h3><p>透過日記整理今天發現了什麼，以及真正想說什麼。</p></div></article><article class="learn"><span class="num">03</span><div><h3>Collaborate</h3><p>傾聽、討論並整合不同想法，共同完成第一次合作任務。</p></div></article><article class="learn"><span class="num">04</span><div><h3>Create</h3><p>選擇素材、錄製英文旁白、安排節奏，完成自己的影片。</p></div></article></div></div></section>
 <section><div class="wrap"><p class="statement">原本以為剪影片可能會敷衍，後來卻看見他們<em>認真挑選素材</em>，甚至利用搭車的零碎時間繼續剪輯。</p></div></section>
 <section id="behind"><div class="wrap"><div class="section-kicker">Behind the Films</div><h2 class="section-title">A few moments behind the work.</h2><p class="section-copy">只留下少量、但真正能補充影片背後學習過程的照片。</p><div class="bts-grid"><article class="bts-feature"><img src="D13331D7-C166-44AD-805D-7603269749FB.jpeg" alt="University of Melbourne NOP group discussion"><div class="overlay"><small>UNIVERSITY OF MELBOURNE</small><h3>第一次合作，共同完成議題提案</h3><p>NOP 議題討論中，學生練習提出觀點、傾聽隊友，並把不同想法整理成一份共同成果。</p></div></article><div class="bts-stack"><article><img src="6BA4621B-5CD9-4B19-AA8D-442AC5035D9F.jpeg" alt="Animal rescue group project"><div class="overlay"><small>COLLABORATION</small><h3>從個人想法到團隊方案</h3><p>沒有唯一標準答案，重點是如何一起思考與完成。</p></div></article><article><img src="B1DFA8B1-0B24-49B8-833F-DDDAC3DD754A.jpeg" alt="Queen Victoria Market shop discovery"><div class="overlay"><small>QUEEN VICTORIA MARKET</small><h3>在市場裡找到很酷的店</h3><p>主動探索、停下觀察，找到自己真正想記錄的內容。</p></div></article></div></div></div></section>
@@ -58,35 +58,27 @@ function renderFilms(){const list=active==='All'?works:works.filter(x=>x.topic==
 function renderCreators(){const names=[...new Set(works.filter(w=>w.student!=='Official').map(w=>w.student))];creatorGrid.innerHTML=names.map(n=>{const ws=works.filter(w=>w.student===n);return `<article class="creator"><div class="avatar">${n[0]}</div><h3>${n}</h3><p>${ws.length} ${ws.length===1?'film':'films'}</p><strong>${[...new Set(ws.map(w=>w.title))].join(' · ')}</strong></article>`}).join('');}
 renderFilters();renderFilms();renderCreators();
 
-const day1Config={
-  folder:'days/01-acmi',
-  students:['Amy','Eric','Louis','Lawrence','Sasa','Frankie','Eason','Phoebe'],
-  maxPhotos:12
-};
-const imageExtensions=['jpg','jpeg','png','webp'];
-function loadImage(url){return new Promise(resolve=>{const img=new Image();img.onload=()=>resolve(url);img.onerror=()=>resolve(null);img.src=url;});}
-async function findStudentPhotos(student){
-  const found=[];
-  for(let i=1;i<=day1Config.maxPhotos;i++){
-    const num=String(i).padStart(2,'0');
-    let hit=null;
-    for(const ext of imageExtensions){
-      hit=await loadImage(`${day1Config.folder}/${student.toLowerCase()}_${num}.${ext}`);
-      if(hit)break;
-    }
-    if(hit) found.push(hit);
-  }
-  return found;
-}
-async function fetchReflection(student){
+const REPO_OWNER='youjiu0719';
+const REPO_NAME='2027mel';
+const REPO_BRANCH='main';
+
+async function ghListDir(path){
   try{
-    const r=await fetch(`${day1Config.folder}/${student.toLowerCase()}.txt`,{cache:'no-store'});
-    if(!r.ok)return '';
-    return (await r.text()).trim();
-  }catch(e){return '';}
+    const r=await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}?ref=${REPO_BRANCH}`,{cache:'no-store'});
+    if(!r.ok)return [];
+    return await r.json();
+  }catch(e){return [];}
+}
+function formatDayTitle(folderName){
+  const m=folderName.match(/^(\d+)[-_](.+)$/);
+  if(!m)return folderName;
+  const num=m[1].padStart(2,'0');
+  let slug=m[2].replace(/[-_]+/g,' ').trim();
+  slug=slug.length<=5?slug.toUpperCase():slug.replace(/\b\w/g,c=>c.toUpperCase());
+  return `Day ${num} · ${slug}`;
 }
 function reflectionCard(student,photos,text){
-  const slides=photos.map((src,i)=>`<img src="${src}" alt="${student} at ACMI" class="${i===0?'active':''}">`).join('');
+  const slides=photos.map((src,i)=>`<img src="${src}" alt="${student}" class="${i===0?'active':''}">`).join('');
   const controls=photos.length>1?`<button class="slide-btn prev" aria-label="Previous photo">‹</button><button class="slide-btn next" aria-label="Next photo">›</button><div class="slide-dots">${photos.map((_,i)=>`<span class="slide-dot ${i===0?'active':''}"></span>`).join('')}</div>`:'';
   return `<article class="reflection-card" data-student="${student}"><div class="reflection-slider">${slides}${controls}</div><div class="reflection-body"><div class="reflection-name"><div class="avatar">${student[0]}</div><h3>${student}</h3></div><p class="reflection-text">${text.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}</p></div></article>`;
 }
@@ -98,17 +90,45 @@ function initSliders(){
     card.querySelector('.prev').onclick=()=>show(index-1);card.querySelector('.next').onclick=()=>show(index+1);
   });
 }
-async function renderDay1(){
-  const target=document.querySelector('#day1Reflections');
-  const records=[];
-  for(const student of day1Config.students){
-    const [photos,text]=await Promise.all([findStudentPhotos(student),fetchReflection(student)]);
-    if(photos.length&&text)records.push({student,photos,text});
+async function buildDaySection(folderItem){
+  const dayPath=folderItem.path;
+  const entries=await ghListDir(dayPath);
+  const files=entries.filter(e=>e.type==='file').map(e=>e.name);
+  let tag=formatDayTitle(folderItem.name);
+  if(files.includes('title.txt')){
+    try{const r=await fetch(`${dayPath}/title.txt`,{cache:'no-store'});if(r.ok){const t=(await r.text()).trim();if(t)tag=t;}}catch(e){}
   }
-  target.innerHTML=records.length?records.map(r=>reflectionCard(r.student,r.photos,r.text)).join(''):'<div class="reflection-empty">尚未找到資料。請把檔案放進 <strong>days/01-acmi/</strong>，例如 <strong>eric_01.jpg</strong> 與 <strong>eric.txt</strong>。此功能需透過 GitHub Pages 網址查看。</div>';
+  const photoMap={},txtSet=new Set();
+  for(const name of files){
+    const mImg=name.match(/^([a-z0-9]+)(?:_(\d{1,2}))?\.(jpe?g|png|webp)$/i);
+    if(mImg){const key=mImg[1].toLowerCase(),num=mImg[2]?parseInt(mImg[2],10):0;(photoMap[key]=photoMap[key]||[]).push({num,url:`${dayPath}/${name}`});continue;}
+    const mTxt=name.match(/^([a-z0-9]+)\.txt$/i);
+    if(mTxt&&mTxt[1].toLowerCase()!=='title')txtSet.add(mTxt[1].toLowerCase());
+  }
+  const studentKeys=Object.keys(photoMap).filter(k=>txtSet.has(k)).sort();
+  const records=[];
+  for(const key of studentKeys){
+    const photos=photoMap[key].sort((a,b)=>a.num-b.num).map(p=>p.url);
+    let text='';
+    try{const r=await fetch(`${dayPath}/${key}.txt`,{cache:'no-store'});if(r.ok)text=(await r.text()).trim();}catch(e){}
+    if(photos.length&&text)records.push({student:key.charAt(0).toUpperCase()+key.slice(1),photos,text});
+  }
+  const cardsHtml=records.length?records.map(r=>reflectionCard(r.student,r.photos,r.text)).join(''):`<div class="reflection-empty">「${folderItem.name}」資料夾裡還沒有完整的照片＋心得檔案(檔名需成對,如 eric_01.jpg 與 eric.txt)。</div>`;
+  return `<section class="day-journal" id="day-${folderItem.name}"><div class="wrap"><div class="day-head"><div><div class="day-tag">${tag}</div><h2 class="section-title">What caught their attention?</h2></div></div><div class="reflection-grid">${cardsHtml}</div></div></section>`;
+}
+async function renderAllDays(){
+  const container=document.querySelector('#daysContainer');
+  const dirEntries=await ghListDir('days');
+  const dayFolders=dirEntries.filter(e=>e.type==='dir').sort((a,b)=>a.name.localeCompare(b.name,undefined,{numeric:true}));
+  if(!dayFolders.length){
+    container.innerHTML='<section class="day-journal"><div class="wrap"><div class="reflection-empty">找不到 days/ 資料夾,或裡面還沒有任何天數的子資料夾。</div></div></section>';
+    return;
+  }
+  const sections=await Promise.all(dayFolders.map(buildDaySection));
+  container.innerHTML=sections.join('');
   initSliders();
 }
-renderDay1();
+renderAllDays();
 
 </script>
 </body></html>
