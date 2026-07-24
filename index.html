@@ -89,7 +89,7 @@ const REPO_BRANCH='main';
 
 async function getRepoFileList(){
   try{
-    const r=await fetch(`https://data.jsdelivr.com/v1/packages/gh/${REPO_OWNER}/${REPO_NAME}@${REPO_BRANCH}/flat`,{cache:'no-store'});
+    const r=await fetch(`https://data.jsdelivr.com/v1/package/gh/${REPO_OWNER}/${REPO_NAME}@${REPO_BRANCH}/flat`,{cache:'no-store'});
     if(!r.ok)return [];
     const j=await r.json();
     return (j.files||[]).map(f=>f.name.replace(/^\//,''));
