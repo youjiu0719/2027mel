@@ -4,9 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>DALI STUDY｜Melbourne Student Film Showcase</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100..900&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#070807;--panel:#111311;--panel2:#171a17;--text:#f7f7f2;--muted:#a7aca6;--line:#2a2e2a;--accent:#d7ff68;--max:1220px}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,"Noto Sans TC","PingFang TC",sans-serif;line-height:1.55}a{color:inherit;text-decoration:none}button{font:inherit}.wrap{width:min(var(--max),calc(100% - 32px));margin:auto}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font-family:"Noto Sans TC","Inter","PingFang TC","Microsoft JhengHei","Heiti TC",sans-serif;line-height:1.55}a{color:inherit;text-decoration:none}button{font:inherit}.wrap{width:min(var(--max),calc(100% - 32px));margin:auto}
 .nav{position:fixed;z-index:20;top:0;left:0;right:0;background:linear-gradient(#070807ef,#07080700);padding:18px 0}.navin{display:flex;align-items:center;justify-content:space-between}.brand{font-weight:850;letter-spacing:.08em}.navlinks{display:flex;gap:22px;font-size:.9rem;color:#d7dad5}.nav a:hover{color:var(--accent)}
 .hero{min-height:92vh;display:grid;align-items:end;position:relative;overflow:hidden;padding:120px 0 72px;background:radial-gradient(circle at 72% 20%,#39442b 0,transparent 35%),linear-gradient(135deg,#11140f,#050605 70%)}.hero:after{content:"MELBOURNE";position:absolute;left:-1vw;bottom:-3vw;font-size:clamp(5rem,16vw,15rem);font-weight:900;letter-spacing:-.08em;color:#ffffff08;white-space:nowrap}.hero .eyebrow{color:var(--accent);font-weight:800;letter-spacing:.18em;font-size:.78rem;text-transform:uppercase}.hero h1{max-width:970px;margin:18px 0 18px;font-size:clamp(3.4rem,8.5vw,8rem);line-height:.91;letter-spacing:-.07em}.hero p{max-width:730px;color:#ced1cc;font-size:clamp(1rem,2vw,1.3rem)}.hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 20px;border-radius:999px;border:1px solid var(--line);background:#fff;color:#050605;font-weight:800}.btn.ghost{background:transparent;color:#fff}.btn:hover{border-color:var(--accent);transform:translateY(-1px)}
 section{padding:92px 0}.section-kicker{color:var(--accent);font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;font-weight:850}.section-title{font-size:clamp(2rem,5vw,4.6rem);letter-spacing:-.05em;line-height:1;margin:12px 0}.section-copy{max-width:650px;color:var(--muted);font-size:1.05rem}.film-toolbar{display:flex;justify-content:space-between;align-items:end;gap:18px;margin-bottom:30px}.filters{display:flex;gap:8px;flex-wrap:wrap}.filter{border:1px solid var(--line);border-radius:999px;background:transparent;color:#dfe2dd;padding:9px 14px;cursor:pointer}.filter.active,.filter:hover{background:var(--accent);border-color:var(--accent);color:#10120e}
@@ -38,6 +41,7 @@ section{padding:92px 0}.section-kicker{color:var(--accent);font-size:.78rem;lett
 </main>
 <footer class="footer"><div class="wrap"><span>DALI STUDY · Melbourne Student Film Showcase 2026</span><span>Observe · Think · Create</span></div></footer>
 <script>
+const FILMS_READY=true;
 const works=[
 {student:'Louis',topic:'Cooking',title:'Cooking Training',id:'JLW8rfcw7_I',desc:'從餐旅實作中記錄合作、流程與現場節奏。'},
 {student:'Eric',topic:'Cooking',title:'Cooking Training',id:'m-__-qDSX6U',desc:'把實作過程整理成清楚、有節奏的短片。'},
@@ -49,12 +53,17 @@ const works=[
 {student:'Phoebe',topic:'Media',title:'ACMI',id:'VmRDcmC7VWc',desc:'探索影像、科技與互動敘事的可能。'},
 {student:'Official',topic:'Official',title:'Melbourne Journey',id:'PQ-xrloySx0',desc:'由帶隊老師整理的旅程共同紀錄。'},
 {student:'Eric',topic:'City',title:'State Library Victoria',id:'Tqnz8Op37Qw',desc:'把圖書館的歷史與空間整理成自己的英文故事。'},
-{student:'Amy',topic:'Media',title:'ACMI',id:'5rKX6YnLAXY',desc:'從展覽觀察出發，選擇素材並完成影片。'}
+{student:'Amy',topic:'Media',title:'ACMI',id:'5rKX6YnLAXY',desc:'從展覽觀察出發，選擇素材並完成影片。'},
+{student:'Eric',topic:'City',title:'Melbourne Uni',id:'ytDU1QmET0w',desc:'走進校園，記錄第一次踏進墨爾本大學的所見所感。'},
+{student:'Eric',topic:'City',title:'Market',id:'-CYxembBuyQ',desc:'穿梭在 Queen Victoria Market 裡，捕捉市場的日常畫面。'},
+{student:'Eric',topic:'City',title:'RMIT',id:'HN45B6gle14',desc:'用鏡頭記錄 RMIT 校園裡讓人驚豔的建築細節。'},
+{student:'Sasa',topic:'Media',title:'ACMI',id:'OEn79kznF7U',desc:'從展覽出發，記錄自己對動畫與影像創作的觀察。'},
+{student:'Sasa',topic:'Art',title:'NGV & Hosier Lane',id:'Y-7WuzJ_6XY',desc:'從美術館到塗鴉街，記錄兩種截然不同的藝術樣貌。'}
 ];
 const filmGrid=document.querySelector('#filmGrid'),filters=document.querySelector('#filters'),creatorGrid=document.querySelector('#creatorGrid');
 let active='All';const topics=['All',...new Set(works.map(x=>x.topic))];
-function renderFilters(){filters.innerHTML=topics.map(t=>`<button class="filter ${active===t?'active':''}" data-topic="${t}">${t}</button>`).join('');document.querySelectorAll('[data-topic]').forEach(b=>b.onclick=()=>{active=b.dataset.topic;renderFilters();renderFilms();});}
-function renderFilms(){const list=active==='All'?works:works.filter(x=>x.topic===active);filmGrid.innerHTML=list.map(w=>`<article class="film"><div class="frame"><iframe loading="lazy" src="https://www.youtube.com/embed/${w.id}" title="${w.title} by ${w.student}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div><div class="film-info"><div class="film-meta"><strong>${w.student==='Official'?'Official Film':w.student}</strong><span>${w.topic}</span></div><h3>${w.title}</h3><p>${w.desc}</p><div class="skills"><span class="skill">Observation</span><span class="skill">Storytelling</span><span class="skill">English</span><span class="skill">Editing</span></div></div></article>`).join('');}
+function renderFilters(){if(!FILMS_READY){filters.innerHTML='';return;}filters.innerHTML=topics.map(t=>`<button class="filter ${active===t?'active':''}" data-topic="${t}">${t}</button>`).join('');document.querySelectorAll('[data-topic]').forEach(b=>b.onclick=()=>{active=b.dataset.topic;renderFilters();renderFilms();});}
+function renderFilms(){if(!FILMS_READY){filmGrid.innerHTML='<div class="reflection-empty" style="grid-column:1/-1">作品集更新中</div>';return;}const list=active==='All'?works:works.filter(x=>x.topic===active);filmGrid.innerHTML=list.map(w=>`<article class="film"><div class="frame"><iframe loading="lazy" src="https://www.youtube.com/embed/${w.id}" title="${w.title} by ${w.student}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div><div class="film-info"><div class="film-meta"><strong>${w.student==='Official'?'Official Film':w.student}</strong><span>${w.topic}</span></div><h3>${w.title}</h3><p>${w.desc}</p><div class="skills"><span class="skill">Observation</span><span class="skill">Storytelling</span><span class="skill">English</span><span class="skill">Editing</span></div></div></article>`).join('');}
 function renderCreators(){const names=[...new Set(works.filter(w=>w.student!=='Official').map(w=>w.student))];creatorGrid.innerHTML=names.map(n=>{const ws=works.filter(w=>w.student===n);return `<article class="creator"><div class="avatar">${n[0]}</div><h3>${n}</h3><p>${ws.length} ${ws.length===1?'film':'films'}</p><strong>${[...new Set(ws.map(w=>w.title))].join(' · ')}</strong></article>`}).join('');}
 renderFilters();renderFilms();renderCreators();
 
