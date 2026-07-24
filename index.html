@@ -16,7 +16,7 @@ section{padding:92px 0}.section-kicker{color:var(--accent);font-size:.78rem;lett
 .film-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.film{background:var(--panel);border:1px solid var(--line);border-radius:22px;overflow:hidden;transition:.25s}.film:hover{transform:translateY(-5px);border-color:#4e554e}.frame{position:relative;aspect-ratio:9/16;background:#000}.frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}.film-info{padding:18px}.film-meta{display:flex;justify-content:space-between;gap:8px;color:var(--muted);font-size:.82rem}.film h3{font-size:1.35rem;margin:7px 0 4px}.film p{margin:0;color:var(--muted);font-size:.92rem}.skills{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px}.skill{border:1px solid var(--line);border-radius:999px;padding:5px 9px;color:#cdd1cb;font-size:.72rem}
 .learning{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:#0c0e0c}.learning-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:35px}.learn{min-height:245px;padding:25px;border-radius:20px;background:linear-gradient(150deg,#181c17,#101210);border:1px solid var(--line);display:flex;flex-direction:column;justify-content:space-between}.learn .num{color:var(--accent);font-weight:850}.learn h3{font-size:1.7rem;margin:0 0 7px}.learn p{color:var(--muted);margin:0}.statement{font-size:clamp(2rem,5vw,4.4rem);line-height:1.05;letter-spacing:-.05em;max-width:1050px;margin:0}.statement em{color:var(--accent);font-style:normal}
 .bts-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:18px;margin-top:34px}.bts-feature,.bts-stack article{position:relative;overflow:hidden;border-radius:24px;border:1px solid var(--line);background:var(--panel)}.bts-feature{min-height:620px}.bts-feature img,.bts-stack img{width:100%;height:100%;object-fit:cover;display:block}.overlay{position:absolute;inset:auto 0 0;padding:80px 25px 24px;background:linear-gradient(transparent,#070807ed)}.overlay small{color:var(--accent);font-weight:800;letter-spacing:.12em}.overlay h3{font-size:1.8rem;margin:7px 0}.overlay p{margin:0;color:#d4d7d2}.bts-stack{display:grid;gap:18px}.bts-stack article{min-height:301px}
-.creators{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:30px}.creator{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:20px}.avatar{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:#111;font-weight:900}.creator h3{margin:14px 0 3px}.creator p{margin:0;color:var(--muted);font-size:.88rem}.creator strong{display:block;margin-top:14px;color:#e8ebe6;font-size:.82rem}
+.creators{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:30px}.creator{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:20px}.avatar{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:#111;font-weight:900}.avatar-photo{width:44px;height:44px;border-radius:50%;object-fit:cover;display:block}.creator h3{margin:14px 0 3px}.creator p{margin:0;color:var(--muted);font-size:.88rem}.creator strong{display:block;margin-top:14px;color:#e8ebe6;font-size:.82rem}
 .final{padding:110px 0 130px;text-align:center;background:radial-gradient(circle at 50% 30%,#27301f,transparent 40%)}.final h2{font-size:clamp(2.5rem,7vw,6.5rem);line-height:.98;letter-spacing:-.065em;margin:0 auto 24px;max-width:1000px}.final p{color:var(--muted);font-size:1.1rem}.footer{border-top:1px solid var(--line);padding:25px 0;color:var(--muted);font-size:.83rem}.footer .wrap{display:flex;justify-content:space-between;gap:20px}
 
 .day-journal{background:#0b0d0b;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
@@ -63,11 +63,22 @@ const works=[
 const filmGrid=document.querySelector('#filmGrid'),filters=document.querySelector('#filters'),creatorGrid=document.querySelector('#creatorGrid');
 let active='All';const topics=['All',...new Set(works.map(x=>x.topic))];
 function renderFilters(){if(!FILMS_READY){filters.innerHTML='';return;}filters.innerHTML=topics.map(t=>`<button class="filter ${active===t?'active':''}" data-topic="${t}">${t}</button>`).join('');document.querySelectorAll('[data-topic]').forEach(b=>b.onclick=()=>{active=b.dataset.topic;renderFilters();renderFilms();});}
-function renderFilms(){if(!FILMS_READY){filmGrid.innerHTML='<div class="reflection-empty" style="grid-column:1/-1">作品集更新中</div>';return;}const list=active==='All'?works:works.filter(x=>x.topic===active);filmGrid.innerHTML=list.map(w=>`<article class="film"><div class="frame"><iframe loading="lazy" src="https://www.youtube.com/embed/${w.id}" title="${w.verified?`${w.title} by ${w.student}`:'Melbourne Journey'}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>${w.verified?`<div class="film-info"><div class="film-meta"><strong>${w.student==='Official'?'Official Film':w.student}</strong><span>${w.topic}</span></div><h3>${w.title}</h3><p>${w.desc}</p><div class="skills"><span class="skill">Observation</span><span class="skill">Storytelling</span><span class="skill">English</span><span class="skill">Editing</span></div></div>`:`<div class="film-info"><p style="color:var(--muted)">影片整理中</p></div>`}</article>`).join('');}
-function renderCreators(){const names=[...new Set(works.filter(w=>w.student!=='Official').map(w=>w.student))];creatorGrid.innerHTML=names.map(n=>{const ws=works.filter(w=>w.student===n);const verifiedTitles=[...new Set(ws.filter(w=>w.verified).map(w=>w.title))];return `<article class="creator"><div class="avatar">${n[0]}</div><h3>${n}</h3><p>${ws.length} ${ws.length===1?'film':'films'}</p><strong>${verifiedTitles.length?verifiedTitles.join(' · '):'影片整理中'}</strong></article>`}).join('');}
+function renderFilms(){if(!FILMS_READY){filmGrid.innerHTML='<div class="reflection-empty" style="grid-column:1/-1">作品集更新中</div>';return;}const list=active==='All'?works:works.filter(x=>x.topic===active);filmGrid.innerHTML=list.map(w=>`<article class="film"><div class="frame"><iframe loading="lazy" src="https://www.youtube.com/embed/${w.id}" title="${w.verified?`${w.title} by ${w.student}`:w.student}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>${w.verified?`<div class="film-info"><div class="film-meta"><strong>${w.student==='Official'?'Official Film':w.student}</strong><span>${w.topic}</span></div><h3>${w.title}</h3><p>${w.desc}</p><div class="skills"><span class="skill">Observation</span><span class="skill">Storytelling</span><span class="skill">English</span><span class="skill">Editing</span></div></div>`:`<div class="film-info"><div class="film-meta"><strong>${w.student==='Official'?'Official Film':w.student}</strong></div><h3 class="yt-title-slot" data-yt-id="${w.id}"></h3></div>`}</article>`).join('');fillRealTitles();}
+async function fillRealTitles(){
+  const slots=[...document.querySelectorAll('.yt-title-slot')];
+  await Promise.all(slots.map(async el=>{
+    const id=el.dataset.ytId;
+    try{
+      const r=await fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${id}&format=json`);
+      if(r.ok){const j=await r.json();el.textContent=j.title;}
+    }catch(e){}
+  }));
+}
+function renderCreators(){const names=[...new Set(works.filter(w=>w.student!=='Official').map(w=>w.student))];creatorGrid.innerHTML=names.map(n=>{const ws=works.filter(w=>w.student===n);const verifiedTitles=[...new Set(ws.filter(w=>w.verified).map(w=>w.title))];const photo=studentPhotoMap[n.toLowerCase()];const avatarHtml=photo?`<img src="${photo}" alt="${n}" class="avatar-photo">`:`<div class="avatar">${n[0]}</div>`;return `<article class="creator">${avatarHtml}<h3>${n}</h3><p>${ws.length} ${ws.length===1?'film':'films'}</p>${verifiedTitles.length?`<strong>${verifiedTitles.join(' · ')}</strong>`:''}</article>`}).join('');}
 renderFilters();renderFilms();renderCreators();
 
 const REPO_OWNER='youjiu0719';
+const studentPhotoMap={};
 const REPO_NAME='2027mel';
 const REPO_BRANCH='main';
 
@@ -114,6 +125,10 @@ async function buildDaySection(folderItem){
     const mTxt=name.match(/^([a-z0-9]+)\.txt$/i);
     if(mTxt&&mTxt[1].toLowerCase()!=='title')txtSet.add(mTxt[1].toLowerCase());
   }
+  for(const name of files){
+    const mAvatar=name.match(/^([a-zA-Z]+)\D*avatar\D*\.(jpe?g|png|webp)$/i);
+    if(mAvatar){studentPhotoMap[mAvatar[1].toLowerCase()]=`${dayPath}/${name}`;}
+  }
   const studentKeys=Object.keys(photoMap).filter(k=>txtSet.has(k)).sort();
   const records=[];
   for(const key of studentKeys){
@@ -136,6 +151,7 @@ async function renderAllDays(){
   const sections=await Promise.all(dayFolders.map(buildDaySection));
   container.innerHTML=sections.join('');
   initSliders();
+  renderCreators();
 }
 renderAllDays();
 
