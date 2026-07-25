@@ -155,9 +155,9 @@ async function ghApiFallback(){
 async function renderAllDays(){
   const container=document.querySelector('#daysContainer');
   try{
-    let {files:fileList,error}=await getRepoFileList();
+    let {files:fileList,error}=await ghApiFallback();
     if(error){
-      const fallback=await ghApiFallback();
+      const fallback=await getRepoFileList();
       if(!fallback.error){fileList=fallback.files;error=null;}
       else{error=`${error}；${fallback.error}`;}
     }
