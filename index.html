@@ -151,22 +151,16 @@ async function ghApiFallback(){
       const r=await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/days/${d.name}?ref=${REPO_BRANCH}`,{cache:'no-store'});
       if(r.ok){const items=await r.json();items.filter(e=>e.type==='file').forEach(e=>paths.push(`days/${d.name}/${e.name}`));}
     }
+    try{
+      const behindRes=await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/behind?ref=${REPO_BRANCH}`,{cache:'no-store'});
+      if(behindRes.ok){const items=await behindRes.json();items.filter(e=>e.type==='file').forEach(e=>paths.push(`behind/${e.name}`));}
+    }catch(e){}
     return {files:paths,error:null};
   }catch(e){return {files:[],error:`GitHub API 備援也失敗:${e.message}`};}
 }
-async function renderAllDays(){
+async function renderAllDays(fileList){
   const container=document.querySelector('#daysContainer');
   try{
-    let {files:fileList,error}=await ghApiFallback();
-    if(error){
-      const fallback=await getRepoFileList();
-      if(!fallback.error){fileList=fallback.files;error=null;}
-      else{error=`${error}；${fallback.error}`;}
-    }
-    if(error){
-      container.innerHTML=`<section class="day-journal"><div class="wrap"><div class="reflection-empty">抓取失敗：${error}</div></div></section>`;
-      return;
-    }
     const tree=buildDaysTree(fileList);
     if(tree['_avatar']){
       for(const name of tree['_avatar']){
@@ -187,25 +181,30 @@ async function renderAllDays(){
     container.innerHTML=`<section class="day-journal"><div class="wrap"><div class="reflection-empty">程式發生錯誤：${e.message}</div></div></section>`;
   }
 }
-renderAllDays();
-async function ghListFolder(folderPath){
-  try{
-    const r=await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${folderPath}?ref=${REPO_BRANCH}`,{cache:'no-store'});
-    if(!r.ok)return {files:[],error:`狀態碼 ${r.status}`};
-    const items=await r.json();
-    return {files:items.filter(e=>e.type==='file').map(e=>e.name),error:null};
-  }catch(e){return {files:[],error:e.message};}
-}
-async function renderBehind(){
+function renderBehind(fileList){
   const container=document.querySelector('#behindContainer');
-  const {files,error}=await ghListFolder('behind');
+  const files=fileList.filter(p=>p.startsWith('behind/')).map(p=>p.slice('behind/'.length));
   const find=prefix=>files.find(f=>f.toLowerCase().startsWith(prefix));
   const slot=(file,label,title,desc)=>file?`<article class="bts-feature"><img src="behind/${file}" alt="${title}"><div class="overlay"><small>${label}</small><h3>${title}</h3><p>${desc}</p></div></article>`:`<article class="bts-feature bts-placeholder"><div class="reflection-empty">尚未上傳「${label}」的照片(檔名開頭要是 ${label==='QUEEN VICTORIA MARKET'?'market':label.includes('GROUP 1')?'nop1':'nop2'}，放進 behind/ 資料夾)</div></article>`;
-  if(error){container.innerHTML=`<div class="reflection-empty">讀取失敗：${error}</div>`;return;}
   const nop1=find('nop1'),nop2=find('nop2'),market=find('market');
   container.innerHTML=`<div class="bts-grid bts-grid-nop">${slot(nop1,'UNIVERSITY OF MELBOURNE · GROUP 1','第一次合作，共同完成議題提案','NOP 議題討論中，學生練習提出觀點、傾聽隊友，並把不同想法整理成一份共同成果。')}${slot(nop2,'UNIVERSITY OF MELBOURNE · GROUP 2','第二組的議題提案','不同組別各自討論、整理觀點，練習用團隊的方式完成一份提案。')}</div><div class="bts-wide">${slot(market,'QUEEN VICTORIA MARKET','在市場裡找到很酷的店','主動探索、停下觀察，找到自己真正想記錄的內容。')}</div>`;
 }
-renderBehind();
+async function initAll(){
+  let {files:fileList,error}=await getRepoFileList();
+  if(error){
+    const fallback=await ghApiFallback();
+    if(!fallback.error){fileList=fallback.files;error=null;}
+    else{error=`${error}；${fallback.error}`;}
+  }
+  if(error){
+    document.querySelector('#daysContainer').innerHTML=`<section class="day-journal"><div class="wrap"><div class="reflection-empty">抓取失敗：${error}</div></div></section>`;
+    document.querySelector('#behindContainer').innerHTML=`<div class="reflection-empty">抓取失敗：${error}</div>`;
+    return;
+  }
+  await renderAllDays(fileList);
+  renderBehind(fileList);
+}
+initAll();
 
 </script>
 </body></html>
