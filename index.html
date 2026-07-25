@@ -6,10 +6,10 @@
 <title>DALI STUDY｜Melbourne Student Film Showcase</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100..900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@200..900&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#070807;--panel:#111311;--panel2:#171a17;--text:#f7f7f2;--muted:#a7aca6;--line:#2a2e2a;--accent:#d7ff68;--max:1220px}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font-family:"Noto Sans TC","Inter","PingFang TC","Microsoft JhengHei","Heiti TC",sans-serif;line-height:1.55}a{color:inherit;text-decoration:none}button{font:inherit}.wrap{width:min(var(--max),calc(100% - 32px));margin:auto}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font-family:"Noto Serif TC","PingFang TC","Microsoft JhengHei","Heiti TC",serif;line-height:1.55}a{color:inherit;text-decoration:none}button{font:inherit}.wrap{width:min(var(--max),calc(100% - 32px));margin:auto}
 .nav{position:fixed;z-index:20;top:0;left:0;right:0;background:linear-gradient(#070807ef,#07080700);padding:18px 0}.navin{display:flex;align-items:center;justify-content:space-between}.brand{font-weight:850;letter-spacing:.08em}.navlinks{display:flex;gap:22px;font-size:.9rem;color:#d7dad5}.nav a:hover{color:var(--accent)}
 .hero{min-height:92vh;display:grid;align-items:end;position:relative;overflow:hidden;padding:120px 0 72px;background:radial-gradient(circle at 72% 20%,#39442b 0,transparent 35%),linear-gradient(135deg,#11140f,#050605 70%)}.hero:after{content:"MELBOURNE";position:absolute;left:-1vw;bottom:-3vw;font-size:clamp(5rem,16vw,15rem);font-weight:900;letter-spacing:-.08em;color:#ffffff08;white-space:nowrap}.hero .eyebrow{color:var(--accent);font-weight:800;letter-spacing:.18em;font-size:.78rem;text-transform:uppercase}.hero h1{max-width:970px;margin:18px 0 18px;font-size:clamp(3.4rem,8.5vw,8rem);line-height:.91;letter-spacing:-.07em}.hero p{max-width:730px;color:#ced1cc;font-size:clamp(1rem,2vw,1.3rem)}.hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 20px;border-radius:999px;border:1px solid var(--line);background:#fff;color:#050605;font-weight:800}.btn.ghost{background:transparent;color:#fff}.btn:hover{border-color:var(--accent);transform:translateY(-1px)}
 section{padding:92px 0}.section-kicker{color:var(--accent);font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;font-weight:850}.section-title{font-size:clamp(2rem,5vw,4.6rem);letter-spacing:-.05em;line-height:1;margin:12px 0}.section-copy{max-width:650px;color:var(--muted);font-size:1.05rem}.film-toolbar{display:flex;justify-content:space-between;align-items:end;gap:18px;margin-bottom:30px}.filters{display:flex;gap:8px;flex-wrap:wrap}.filter{border:1px solid var(--line);border-radius:999px;background:transparent;color:#dfe2dd;padding:9px 14px;cursor:pointer}.filter.active,.filter:hover{background:var(--accent);border-color:var(--accent);color:#10120e}
@@ -116,8 +116,9 @@ function reflectionCard(student,photos,text){
   const slides=photos.map((src,i)=>`<img src="${src}" alt="${student}" class="${i===0?'active':''}">`).join('');
   const controls=photos.length>1?`<button class="slide-btn prev" aria-label="Previous photo">‹</button><button class="slide-btn next" aria-label="Next photo">›</button><div class="slide-dots">${photos.map((_,i)=>`<span class="slide-dot ${i===0?'active':''}"></span>`).join('')}</div>`:'';
   const avatarPhoto=studentPhotoMap[student.toLowerCase()];
+  const grade=studentGradeMap[student.toLowerCase()];
   const avatarHtml=avatarPhoto?`<img src="${avatarPhoto}" alt="${student}" class="avatar-photo">`:`<div class="avatar">${student[0]}</div>`;
-  return `<article class="reflection-card" data-student="${student}"><div class="reflection-slider">${slides}${controls}</div><div class="reflection-body"><div class="reflection-name">${avatarHtml}<h3>${student}</h3></div><p class="reflection-text">${text.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}</p></div></article>`;
+  return `<article class="reflection-card" data-student="${student}"><div class="reflection-slider">${slides}${controls}</div><div class="reflection-body"><div class="reflection-name">${avatarHtml}<h3>${student}${grade?` <span class="grade-tag">${grade}</span>`:''}</h3></div><p class="reflection-text">${text.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}</p></div></article>`;
 }
 function initSliders(){
   document.querySelectorAll('.reflection-card').forEach(card=>{
@@ -127,11 +128,16 @@ function initSliders(){
     card.querySelector('.prev').onclick=()=>show(index-1);card.querySelector('.next').onclick=()=>show(index+1);
   });
 }
+const dayHeadlines=['What caught their attention?','What did they notice today?','What stood out today?','Moments they chose to remember.','What did they see differently?','Small details, worth a second look.','What made today worth recording?','A day seen through their eyes.'];
 async function buildDaySection(folderName,files,dayIndex){
   const dayPath=`days/${folderName}`;
   let tag=formatDayTitle(folderName);
   if(files.includes('title.txt')){
     try{const r=await fetch(`${dayPath}/title.txt`,{cache:'no-store'});if(r.ok){const t=(await r.text()).trim();if(t)tag=t;}}catch(e){}
+  }
+  let headline=dayHeadlines[dayIndex%dayHeadlines.length];
+  if(files.includes('subtitle.txt')){
+    try{const r=await fetch(`${dayPath}/subtitle.txt`,{cache:'no-store'});if(r.ok){const t=(await r.text()).trim();if(t)headline=t;}}catch(e){}
   }
   const photoMap={},txtSet=new Set();
   for(const name of files){
@@ -155,7 +161,7 @@ async function buildDaySection(folderName,files,dayIndex){
     if(photos.length&&text)records.push({student:key.charAt(0).toUpperCase()+key.slice(1),photos,text});
   }
   const cardsHtml=records.length?records.map(r=>reflectionCard(r.student,r.photos,r.text)).join(''):`<div class="reflection-empty">「${folderName}」資料夾裡還沒有完整的照片＋心得檔案(檔名需成對,如 eric_01.jpg 與 eric.txt)。</div>`;
-  return `<section class="day-journal" id="day-${folderName}"><div class="wrap"><div class="day-head"><div><div class="day-tag">${tag}</div><h2 class="section-title">What caught their attention?</h2></div></div><div class="reflection-grid">${cardsHtml}</div></div></section>`;
+  return `<section class="day-journal" id="day-${folderName}"><div class="wrap"><div class="day-head"><div><div class="day-tag">${tag}</div><h2 class="section-title">${headline}</h2></div></div><div class="reflection-grid">${cardsHtml}</div></div></section>`;
 }
 async function ghApiFallback(){
   try{
