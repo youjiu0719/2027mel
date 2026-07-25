@@ -190,9 +190,9 @@ function renderBehind(fileList){
   container.innerHTML=`<div class="bts-grid bts-grid-nop">${slot(nop1,'UNIVERSITY OF MELBOURNE · GROUP 1','第一次合作，共同完成議題提案','NOP 議題討論中，學生練習提出觀點、傾聽隊友，並把不同想法整理成一份共同成果。')}${slot(nop2,'UNIVERSITY OF MELBOURNE · GROUP 2','第二組的議題提案','不同組別各自討論、整理觀點，練習用團隊的方式完成一份提案。')}</div><div class="bts-wide">${slot(market,'QUEEN VICTORIA MARKET','在市場裡找到很酷的店','主動探索、停下觀察，找到自己真正想記錄的內容。')}</div>`;
 }
 async function initAll(){
-  let {files:fileList,error}=await getRepoFileList();
+  let {files:fileList,error}=await ghApiFallback();
   if(error){
-    const fallback=await ghApiFallback();
+    const fallback=await getRepoFileList();
     if(!fallback.error){fileList=fallback.files;error=null;}
     else{error=`${error}；${fallback.error}`;}
   }
