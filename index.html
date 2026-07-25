@@ -64,22 +64,7 @@ const works=[
 const filmGrid=document.querySelector('#filmGrid'),filters=document.querySelector('#filters'),creatorGrid=document.querySelector('#creatorGrid');
 let active='All';const topics=['All',...new Set(works.map(x=>x.topic))];
 function renderFilters(){if(!FILMS_READY){filters.innerHTML='';return;}filters.innerHTML=topics.map(t=>`<button class="filter ${active===t?'active':''}" data-topic="${t}">${t}</button>`).join('');document.querySelectorAll('[data-topic]').forEach(b=>b.onclick=()=>{active=b.dataset.topic;renderFilters();renderFilms();});}
-function renderFilms(){if(!FILMS_READY){filmGrid.innerHTML='<div class="reflection-empty" style="grid-column:1/-1">作品集更新中</div>';return;}const list=active==='All'?works:works.filter(x=>x.topic===active);filmGrid.innerHTML=list.map(w=>`<article class="film"><div class="frame"><iframe loading="lazy" src="https://www.youtube.com/embed/${w.id}" title="${w.verified?`${w.title} by ${w.student}`:w.student}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>${w.verified?`<div class="film-info"><div class="film-meta"><strong>${w.student==='Official'?'Official Film':w.student}</strong><span>${w.topic}</span></div><h3>${w.title}</h3><p>${w.desc}</p><div class="skills"><span class="skill">Observation</span><span class="skill">Storytelling</span><span class="skill">English</span><span class="skill">Editing</span></div></div>`:`<div class="film-info"><div class="film-meta"><strong class="yt-name-slot">${w.student==='Official'?'Official Film':w.student}</strong></div><h3 class="yt-title-slot" data-yt-id="${w.id}"></h3></div>`}</article>`).join('');fillRealTitles();}
-async function fillRealTitles(){
-  const cards=[...document.querySelectorAll('.yt-title-slot')].map(el=>el.closest('.film'));
-  await Promise.all(cards.map(async card=>{
-    const titleEl=card.querySelector('.yt-title-slot'),nameEl=card.querySelector('.yt-name-slot');
-    const id=titleEl.dataset.ytId;
-    try{
-      const r=await fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${id}&format=json`);
-      if(!r.ok)return;
-      const j=await r.json();
-      const m=j.title.match(/^(.*?)\s*[|｜]\s*by\s*(.+)$/i);
-      if(m){titleEl.textContent=m[1].trim();nameEl.textContent=m[2].trim();}
-      else{titleEl.textContent=j.title;}
-    }catch(e){}
-  }));
-}
+function renderFilms(){if(!FILMS_READY){filmGrid.innerHTML='<div class="reflection-empty" style="grid-column:1/-1">作品集更新中</div>';return;}const list=active==='All'?works:works.filter(x=>x.topic===active);filmGrid.innerHTML=list.map(w=>`<article class="film"><div class="frame"><iframe loading="lazy" src="https://www.youtube.com/embed/${w.id}" title="${w.verified?`${w.title} by ${w.student}`:'Student film'}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>${w.verified?`<div class="film-info"><div class="film-meta"><strong>${w.student==='Official'?'Official Film':w.student}</strong><span>${w.topic}</span></div><h3>${w.title}</h3><p>${w.desc}</p><div class="skills"><span class="skill">Observation</span><span class="skill">Storytelling</span><span class="skill">English</span><span class="skill">Editing</span></div></div>`:''}</article>`).join('');}
 function renderCreators(){const names=[...new Set(works.filter(w=>w.student!=='Official').map(w=>w.student))];creatorGrid.innerHTML=names.map(n=>{const ws=works.filter(w=>w.student===n);const verifiedTitles=[...new Set(ws.filter(w=>w.verified).map(w=>w.title))];const photo=studentPhotoMap[n.toLowerCase()];const avatarHtml=photo?`<img src="${photo}" alt="${n}" class="avatar-photo">`:`<div class="avatar">${n[0]}</div>`;return `<article class="creator">${avatarHtml}<h3>${n}</h3><p>${ws.length} ${ws.length===1?'film':'films'}</p>${verifiedTitles.length?`<strong>${verifiedTitles.join(' · ')}</strong>`:''}</article>`}).join('');}
 renderFilters();renderFilms();renderCreators();
 
@@ -90,10 +75,10 @@ const REPO_BRANCH='main';
 async function getRepoFileList(){
   try{
     const r=await fetch(`https://data.jsdelivr.com/v1/package/gh/${REPO_OWNER}/${REPO_NAME}@${REPO_BRANCH}/flat`,{cache:'no-store'});
-    if(!r.ok)return [];
+    if(!r.ok)return {files:[],error:`jsDelivr 回應失敗(狀態碼 ${r.status})`};
     const j=await r.json();
-    return (j.files||[]).map(f=>f.name.replace(/^\//,''));
-  }catch(e){return [];}
+    return {files:(j.files||[]).map(f=>f.name.replace(/^\//,'')),error:null};
+  }catch(e){return {files:[],error:`網路請求失敗:${e.message}`};}
 }
 function buildDaysTree(fileList){
   const tree={};
@@ -152,19 +137,51 @@ async function buildDaySection(folderName,files){
   const cardsHtml=records.length?records.map(r=>reflectionCard(r.student,r.photos,r.text)).join(''):`<div class="reflection-empty">「${folderName}」資料夾裡還沒有完整的照片＋心得檔案(檔名需成對,如 eric_01.jpg 與 eric.txt)。</div>`;
   return `<section class="day-journal" id="day-${folderName}"><div class="wrap"><div class="day-head"><div><div class="day-tag">${tag}</div><h2 class="section-title">What caught their attention?</h2></div></div><div class="reflection-grid">${cardsHtml}</div></div></section>`;
 }
+async function ghApiFallback(){
+  try{
+    const listRes=await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/days?ref=${REPO_BRANCH}`,{cache:'no-store'});
+    if(!listRes.ok)return {files:[],error:`GitHub API 備援也失敗(狀態碼 ${listRes.status})`};
+    const dirs=(await listRes.json()).filter(e=>e.type==='dir');
+    const paths=[];
+    for(const d of dirs){
+      const r=await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/days/${d.name}?ref=${REPO_BRANCH}`,{cache:'no-store'});
+      if(r.ok){const items=await r.json();items.filter(e=>e.type==='file').forEach(e=>paths.push(`days/${d.name}/${e.name}`));}
+    }
+    return {files:paths,error:null};
+  }catch(e){return {files:[],error:`GitHub API 備援也失敗:${e.message}`};}
+}
 async function renderAllDays(){
   const container=document.querySelector('#daysContainer');
-  const fileList=await getRepoFileList();
-  const tree=buildDaysTree(fileList);
-  const dayFolders=Object.keys(tree).sort((a,b)=>a.localeCompare(b,undefined,{numeric:true}));
-  if(!dayFolders.length){
-    container.innerHTML='<section class="day-journal"><div class="wrap"><div class="reflection-empty">找不到 days/ 資料夾,或裡面還沒有任何天數的子資料夾。</div></div></section>';
-    return;
+  try{
+    let {files:fileList,error}=await getRepoFileList();
+    if(error){
+      const fallback=await ghApiFallback();
+      if(!fallback.error){fileList=fallback.files;error=null;}
+      else{error=`${error}；${fallback.error}`;}
+    }
+    if(error){
+      container.innerHTML=`<section class="day-journal"><div class="wrap"><div class="reflection-empty">抓取失敗：${error}</div></div></section>`;
+      return;
+    }
+    const tree=buildDaysTree(fileList);
+    if(tree['_avatar']){
+      for(const name of tree['_avatar']){
+        const m=name.match(/^([a-zA-Z]+).*\.(jpe?g|png|webp)$/i);
+        if(m)studentPhotoMap[m[1].toLowerCase()]=`days/_avatar/${name}`;
+      }
+    }
+    const dayFolders=Object.keys(tree).filter(k=>!k.startsWith('_')).sort((a,b)=>a.localeCompare(b,undefined,{numeric:true}));
+    if(!dayFolders.length){
+      container.innerHTML='<section class="day-journal"><div class="wrap"><div class="reflection-empty">找不到 days/ 資料夾,或裡面還沒有任何天數的子資料夾。</div></div></section>';
+      return;
+    }
+    const sections=await Promise.all(dayFolders.map(folder=>buildDaySection(folder,tree[folder])));
+    container.innerHTML=sections.join('');
+    initSliders();
+    renderCreators();
+  }catch(e){
+    container.innerHTML=`<section class="day-journal"><div class="wrap"><div class="reflection-empty">程式發生錯誤：${e.message}</div></div></section>`;
   }
-  const sections=await Promise.all(dayFolders.map(folder=>buildDaySection(folder,tree[folder])));
-  container.innerHTML=sections.join('');
-  initSliders();
-  renderCreators();
 }
 renderAllDays();
 
