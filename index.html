@@ -158,24 +158,12 @@ async function buildDaySection(folderName,files,dayIndex){
 }
 async function ghApiFallback(){
   try{
-    const listRes=await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/days?ref=${REPO_BRANCH}`,{cache:'no-store'});
-    if(!listRes.ok)return {files:[],error:`GitHub API 備援也失敗(狀態碼 ${listRes.status})`};
-    const dirs=(await listRes.json()).filter(e=>e.type==='dir');
-    const paths=[];
-    for(const d of dirs){
-      const r=await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/days/${d.name}?ref=${REPO_BRANCH}`,{cache:'no-store'});
-      if(r.ok){const items=await r.json();items.filter(e=>e.type==='file').forEach(e=>paths.push(`days/${d.name}/${e.name}`));}
-    }
-    try{
-      const behindRes=await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/behind?ref=${REPO_BRANCH}`,{cache:'no-store'});
-      if(behindRes.ok){const items=await behindRes.json();items.filter(e=>e.type==='file').forEach(e=>paths.push(`behind/${e.name}`));}
-    }catch(e){}
-    try{
-      const hlRes=await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/highlights?ref=${REPO_BRANCH}`,{cache:'no-store'});
-      if(hlRes.ok){const items=await hlRes.json();items.filter(e=>e.type==='file').forEach(e=>paths.push(`highlights/${e.name}`));}
-    }catch(e){}
-    return {files:paths,error:null};
-  }catch(e){return {files:[],error:`GitHub API 備援也失敗:${e.message}`};}
+    const r=await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/git/trees/${REPO_BRANCH}?recursive=1`,{cache:'no-store'});
+    if(!r.ok)return {files:[],error:`GitHub API 失敗(狀態碼 ${r.status})`};
+    const j=await r.json();
+    const files=(j.tree||[]).filter(e=>e.type==='blob').map(e=>e.path);
+    return {files,error:null};
+  }catch(e){return {files:[],error:`GitHub API 失敗:${e.message}`};}
 }
 async function renderAllDays(fileList){
   const container=document.querySelector('#daysContainer');
