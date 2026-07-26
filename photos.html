@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Photo Gallery｜DALI STUDY</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@200..900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#070807;--panel:#111311;--panel2:#171a17;--text:#f7f7f2;--muted:#a7aca6;--line:#2a2e2a;--accent:#d7ff68;--max:1220px}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font-family:"Noto Serif TC","PingFang TC","Microsoft JhengHei","Heiti TC",serif;line-height:1.55}
+a{color:inherit;text-decoration:none}button{font:inherit;cursor:pointer}.wrap{width:min(var(--max),calc(100% - 32px));margin:auto}
+.nav{position:fixed;z-index:30;top:0;left:0;right:0;background:linear-gradient(#070807ef,#07080700);padding:18px 0}.navin{display:flex;align-items:center;justify-content:space-between}.brand{font-weight:850;letter-spacing:.08em}.navlinks{display:flex;gap:22px;font-size:.9rem;color:#d7dad5}.nav a:hover{color:var(--accent)}
+header.top{padding:120px 0 40px}.eyebrow{color:var(--accent);font-weight:800;letter-spacing:.18em;font-size:.78rem;text-transform:uppercase}h1{font-size:clamp(2.2rem,5vw,3.6rem);letter-spacing:-.04em;line-height:1.05;margin:14px 0}header.top p{color:var(--muted);max-width:640px;font-size:1.02rem}
+main{padding-bottom:140px}
+.day-block{margin-top:56px}.day-block h2{font-size:1.5rem;margin:0 0 18px;display:flex;align-items:center;gap:12px}.day-block h2 .count{font-size:.78rem;color:var(--muted);font-weight:400;border:1px solid var(--line);border-radius:999px;padding:3px 10px}
+.photo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.photo-item{position:relative;aspect-ratio:1/1;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:var(--panel2);cursor:pointer}
+.photo-item img{width:100%;height:100%;object-fit:cover;display:block}
+.photo-item .check{position:absolute;top:8px;left:8px;width:24px;height:24px;border-radius:7px;border:2px solid #ffffffb0;background:#00000055;display:grid;place-items:center;z-index:2}
+.photo-item .check svg{display:none;width:16px;height:16px;fill:#10120e}
+.photo-item.selected .check{background:var(--accent);border-color:var(--accent)}
+.photo-item.selected .check svg{display:block}
+.photo-item.selected{outline:2px solid var(--accent);outline-offset:-2px}
+.dl-btn{position:absolute;bottom:8px;right:8px;width:30px;height:30px;border-radius:50%;background:#000000b0;border:1px solid #ffffff42;display:grid;place-items:center;z-index:2;color:#fff}
+.dl-btn:hover{background:var(--accent);color:#10120e;border-color:var(--accent)}
+.reflection-empty{border:1px dashed var(--line);border-radius:18px;padding:24px;color:var(--muted);text-align:center}
+.selbar{position:fixed;left:0;right:0;bottom:0;z-index:40;background:#0c0e0cf2;backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:14px 0;transform:translateY(100%);transition:transform .25s}
+.selbar.show{transform:translateY(0)}
+.selbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.selbar .count{font-weight:700}
+.selbar .actions{display:flex;gap:10px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 18px;border-radius:999px;border:1px solid var(--accent);background:var(--accent);color:#10120e;font-weight:800}
+.btn.ghost{background:transparent;border-color:var(--line);color:var(--text)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.lightbox{position:fixed;inset:0;z-index:50;background:#000000ee;display:none;align-items:center;justify-content:center;padding:24px}
+.lightbox.show{display:flex}
+.lightbox img{max-width:92vw;max-height:80vh;border-radius:8px}
+.lightbox .lb-close{position:absolute;top:20px;right:24px;color:#fff;font-size:2rem;background:none;border:none}
+.lightbox .lb-dl{position:absolute;bottom:24px;left:50%;transform:translateX(-50%)}
+.progress{position:fixed;inset:0;z-index:60;background:#000000cc;display:none;align-items:center;justify-content:center;color:#fff;font-size:1.1rem;text-align:center;padding:20px}
+.progress.show{display:flex}
+footer.footer{border-top:1px solid var(--line);padding:25px 0;color:var(--muted);font-size:.83rem}
+@media(max-width:560px){.photo-grid{grid-template-columns:repeat(auto-fill,minmax(105px,1fr));gap:7px}}
+</style>
+</head>
+<body>
+<nav class="nav"><div class="wrap navin"><a class="brand" href="index.html">DALI STUDY</a><div class="navlinks"><a href="index.html">Home</a></div></div></nav>
+<header class="top"><div class="wrap"><div class="eyebrow">Photo Gallery</div><h1>All the moments, in one place.</h1><p>依照每一天分類。點照片可以放大瀏覽，右下角的圖示可以單張下載；勾選多張後，畫面下方會出現「打包下載」的按鈕。</p></div></header>
+<main><div class="wrap"><div id="galleryContainer"><div class="reflection-empty">正在讀取所有照片⋯</div></div></div></main>
+<footer class="footer"><div class="wrap"><span>DALI STUDY · Melbourne Student Film Showcase 2026</span><span>Photo Gallery</span></div></footer>
+
+<div class="lightbox" id="lightbox">
+  <button class="lb-close" id="lbClose">&times;</button>
+  <img id="lbImg" src="" alt="">
+  <a class="btn lb-dl" id="lbDownload" href="#" download>下載這張</a>
+</div>
+<div class="selbar" id="selbar"><div class="wrap"><div class="count" id="selCount">已選擇 0 張</div><div class="actions"><button class="btn ghost" id="clearSel">清除選取</button><button class="btn" id="downloadSel">打包下載選取的照片</button></div></div></div>
+<div class="progress" id="progress">正在打包照片⋯<br>請稍候，張數多可能需要一點時間</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script>
+const REPO_OWNER='youjiu0719';
+const REPO_NAME='2027mel';
+const REPO_BRANCH='main';
+const selected=new Set();
+
+function formatDayTitle(folderName){
+  const m=folderName.match(/^(\d+)[-_](.+)$/);
+  if(!m)return folderName;
+  const num=m[1].padStart(2,'0');
+  let slug=m[2].replace(/[-_]+/g,' ').trim();
+  slug=slug.length<=5?slug.toUpperCase():slug.replace(/\b\w/g,c=>c.toUpperCase());
+  return `Day ${num} · ${slug}`;
+}
+
+async function fetchTree(){
+  try{
+    const r=await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/git/trees/${REPO_BRANCH}?recursive=1`,{cache:'no-store'});
+    if(!r.ok)return {files:[],error:`GitHub API 失敗(狀態碼 ${r.status})`};
+    const j=await r.json();
+    return {files:(j.tree||[]).filter(e=>e.type==='blob').map(e=>e.path),error:null};
+  }catch(e){return {files:[],error:e.message};}
+}
+
+function updateSelBar(){
+  const bar=document.querySelector('#selbar');
+  document.querySelector('#selCount').textContent=`已選擇 ${selected.size} 張`;
+  bar.classList.toggle('show',selected.size>0);
+}
+
+function toggleSelect(item,src){
+  if(selected.has(src)){selected.delete(src);item.classList.remove('selected');}
+  else{selected.add(src);item.classList.add('selected');}
+  updateSelBar();
+}
+
+function openLightbox(src){
+  document.querySelector('#lbImg').src=src;
+  const dl=document.querySelector('#lbDownload');
+  dl.href=src;dl.download=src.split('/').pop();
+  document.querySelector('#lightbox').classList.add('show');
+}
+
+async function downloadSelected(){
+  if(!selected.size)return;
+  const progress=document.querySelector('#progress');
+  progress.classList.add('show');
+  try{
+    const zip=new JSZip();
+    let i=0;
+    for(const src of selected){
+      i++;
+      progress.innerHTML=`正在打包照片⋯ (${i}/${selected.size})<br>請稍候，張數多可能需要一點時間`;
+      try{
+        const res=await fetch(src);
+        const blob=await res.blob();
+        zip.file(src.split('/').pop(),blob);
+      }catch(e){}
+    }
+    progress.innerHTML='正在產生 zip 檔⋯';
+    const content=await zip.generateAsync({type:'blob'});
+    const url=URL.createObjectURL(content);
+    const a=document.createElement('a');
+    a.href=url;a.download='photos.zip';
+    document.body.appendChild(a);a.click();a.remove();
+    URL.revokeObjectURL(url);
+  }catch(e){
+    alert('打包失敗，請稍後再試，或改用單張下載。');
+  }
+  progress.classList.remove('show');
+}
+
+async function renderGallery(){
+  const container=document.querySelector('#galleryContainer');
+  const {files,error}=await fetchTree();
+  if(error){container.innerHTML=`<div class="reflection-empty">抓取失敗：${error}</div>`;return;}
+  const dayMap={};
+  for(const path of files){
+    const m=path.match(/^days\/([^\/]+)\/([^\/]+)$/);
+    if(!m)continue;
+    const [,folder,file]=m;
+    if(folder.startsWith('_'))continue;
+    if(!/\.(jpe?g|png|webp)$/i.test(file))continue;
+    (dayMap[folder]=dayMap[folder]||[]).push(`days/${folder}/${file}`);
+  }
+  const dayFolders=Object.keys(dayMap).sort((a,b)=>a.localeCompare(b,undefined,{numeric:true}));
+  if(!dayFolders.length){container.innerHTML='<div class="reflection-empty">找不到任何照片。</div>';return;}
+  container.innerHTML=dayFolders.map(folder=>{
+    const photos=dayMap[folder].sort();
+    return `<section class="day-block"><h2>${formatDayTitle(folder)}<span class="count">${photos.length} 張</span></h2><div class="photo-grid">${photos.map(src=>`<div class="photo-item" data-src="${src}"><div class="check"><svg viewBox="0 0 24 24"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg></div><img src="${src}" loading="lazy" alt="Photo"><a class="dl-btn" href="${src}" download title="下載這張" onclick="event.stopPropagation()">⬇</a></div>`).join('')}</div></section>`;
+  }).join('');
+  document.querySelectorAll('.photo-item').forEach(item=>{
+    const src=item.dataset.src;
+    item.querySelector('.check').onclick=e=>{e.stopPropagation();toggleSelect(item,src);};
+    item.querySelector('img').onclick=()=>openLightbox(src);
+  });
+}
+
+document.querySelector('#lbClose').onclick=()=>document.querySelector('#lightbox').classList.remove('show');
+document.querySelector('#lightbox').onclick=e=>{if(e.target.id==='lightbox')e.target.classList.remove('show');};
+document.querySelector('#clearSel').onclick=()=>{selected.clear();document.querySelectorAll('.photo-item.selected').forEach(el=>el.classList.remove('selected'));updateSelBar();};
+document.querySelector('#downloadSel').onclick=downloadSelected;
+
+renderGallery();
+</script>
+</body></html>
