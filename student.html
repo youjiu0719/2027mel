@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Student Profile｜DALI STUDY</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@200..900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#070807;--panel:#111311;--panel2:#171a17;--text:#f7f7f2;--muted:#a7aca6;--line:#2a2e2a;--accent:#d7ff68;--max:1220px}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font-family:"Noto Serif TC","PingFang TC","Microsoft JhengHei","Heiti TC",serif;line-height:1.55}
+a{color:inherit;text-decoration:none}button{font:inherit;cursor:pointer}.wrap{width:min(var(--max),calc(100% - 32px));margin:auto}
+.nav{position:fixed;z-index:20;top:0;left:0;right:0;background:linear-gradient(#070807ef,#07080700);padding:18px 0}.navin{display:flex;align-items:center;justify-content:space-between}.brand{font-weight:850;letter-spacing:.08em}.back{color:var(--muted);font-size:.9rem}.back:hover{color:var(--accent)}
+.profile-head{padding:130px 0 40px;display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+.profile-avatar{width:96px;height:96px;border-radius:50%;object-fit:cover;background:var(--accent);display:grid;place-items:center;font-size:2.4rem;font-weight:900;color:#10120e;flex-shrink:0}
+.profile-name{font-size:clamp(2.2rem,5vw,3.4rem);letter-spacing:-.03em;margin:0}
+.grade-tag{display:inline-block;font-size:.72rem;font-weight:700;color:var(--accent);border:1px solid var(--line);border-radius:999px;padding:3px 10px;vertical-align:middle;margin-left:8px}
+.profile-stats{color:var(--muted);font-size:.95rem;margin-top:6px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:34px}
+.tab-btn{border:1px solid var(--line);border-radius:999px;background:transparent;color:#dfe2dd;padding:9px 16px;font-family:inherit;font-size:.92rem}
+.tab-btn.active,.tab-btn:hover{background:var(--accent);border-color:var(--accent);color:#10120e}
+.tab-panel{display:none}.tab-panel.active{display:block}
+main{padding-bottom:120px;min-height:50vh}
+.about-text{max-width:680px;color:var(--muted);font-size:1.05rem}
+.film-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.film{background:var(--panel);border:1px solid var(--line);border-radius:22px;overflow:hidden;transition:.25s}
+.film:hover{transform:translateY(-5px);border-color:#4e554e}
+.frame{position:relative;aspect-ratio:9/16;background:#000;cursor:pointer}
+.frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.frame img{width:100%;height:100%;object-fit:cover;display:block;opacity:.75}
+.play-btn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:56px;height:56px;border-radius:50%;background:#000000b0;border:2px solid #ffffffcc;color:#fff;font-size:1.3rem;display:grid;place-items:center;padding-left:4px}
+.frame:hover .play-btn{background:var(--accent);color:#10120e;border-color:var(--accent)}
+.film-info{padding:16px}.film-info span{color:var(--accent);font-size:.76rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase}.film-info h3{font-size:1.15rem;margin:6px 0 4px}.film-info p{margin:0;color:var(--muted);font-size:.88rem}
+.reflection-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px}
+.reflection-card{border:1px solid var(--line);background:var(--panel);border-radius:22px;overflow:hidden}
+.reflection-card img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}
+.reflection-body{padding:18px}.reflection-body .day-tag{color:var(--accent);font-weight:800;font-size:.76rem;letter-spacing:.1em;text-transform:uppercase}
+.reflection-text{white-space:pre-wrap;color:#d9dcd7;margin:8px 0 0;font-size:.94rem}
+.photo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.photo-item{aspect-ratio:1/1;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:var(--panel2)}
+.photo-item img{width:100%;height:100%;object-fit:cover;display:block;cursor:pointer}
+.reflection-empty{border:1px dashed var(--line);border-radius:18px;padding:24px;color:var(--muted);grid-column:1/-1;text-align:center}
+.lightbox{position:fixed;inset:0;z-index:50;background:#000000ee;display:none;align-items:center;justify-content:center;padding:24px}
+.lightbox.show{display:flex}.lightbox img{max-width:92vw;max-height:85vh;border-radius:8px}
+.lightbox .lb-close{position:absolute;top:20px;right:24px;color:#fff;font-size:2rem;background:none;border:none}
+footer.footer{border-top:1px solid var(--line);padding:25px 0;color:var(--muted);font-size:.83rem}
+@media(max-width:700px){.film-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){.film-grid{grid-template-columns:1fr}.profile-head{padding-top:110px}}
+</style>
+</head>
+<body>
+<nav class="nav"><div class="wrap navin"><a class="brand" href="index.html">DALI STUDY</a><a class="back" href="index.html#creators">← Back to Creators</a></div></nav>
+<div class="wrap">
+<div class="profile-head" id="profileHead"><div class="reflection-empty">正在讀取學生資料⋯</div></div>
+<div class="tabs" id="tabs" style="display:none">
+  <button class="tab-btn active" data-tab="about">About</button>
+  <button class="tab-btn" data-tab="videos">所有影片</button>
+  <button class="tab-btn" data-tab="reflections">全部心得</button>
+  <button class="tab-btn" data-tab="photos">全部照片</button>
+</div>
+<main>
+  <div class="tab-panel active" id="panel-about"><p class="about-text" id="aboutText">正在讀取⋯</p></div>
+  <div class="tab-panel" id="panel-videos"><div class="film-grid" id="videoGrid"></div></div>
+  <div class="tab-panel" id="panel-reflections"><div class="reflection-grid" id="reflectionGrid"></div></div>
+  <div class="tab-panel" id="panel-photos"><div class="photo-grid" id="photoGrid"></div></div>
+</main>
+</div>
+<footer class="footer"><div class="wrap"><span>DALI STUDY · Melbourne Student Film Showcase 2026</span></div></footer>
+<div class="lightbox" id="lightbox"><button class="lb-close" id="lbClose">&times;</button><img id="lbImg" src="" alt=""></div>
+
+<script src="data.js"></script>
+<script>
+const params=new URLSearchParams(location.search);
+const studentKey=(params.get('name')||'').toLowerCase();
+
+function lazyFrameHtml(id){
+  return `<div class="frame" data-yt="${id}"><img src="https://img.youtube.com/vi/${id}/hqdefault.jpg" alt="Video thumbnail" loading="lazy"><button class="play-btn" aria-label="播放">▶</button></div>`;
+}
+function bindLazyFrames(){
+  document.querySelectorAll('.frame[data-yt]').forEach(f=>{
+    if(f.dataset.bound)return;
+    f.dataset.bound='1';
+    f.onclick=()=>{
+      const id=f.dataset.yt;
+      f.innerHTML=`<iframe src="https://www.youtube.com/embed/${id}?autoplay=1" title="Video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
+    };
+  });
+}
+function openLightbox(src){
+  document.querySelector('#lbImg').src=src;
+  document.querySelector('#lightbox').classList.add('show');
+}
+document.querySelector('#lbClose').onclick=()=>document.querySelector('#lightbox').classList.remove('show');
+document.querySelector('#lightbox').onclick=e=>{if(e.target.id==='lightbox')e.target.classList.remove('show');};
+
+document.querySelectorAll('.tab-btn').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+  document.querySelector(`#panel-${b.dataset.tab}`).classList.add('active');
+});
+
+function buildDaysTree(fileList){
+  const tree={};
+  for(const path of fileList){
+    const m=path.match(/^days\/([^\/]+)\/([^\/]+)$/);
+    if(m){const [,folder,file]=m;(tree[folder]=tree[folder]||[]).push(file);}
+  }
+  return tree;
+}
+
+async function init(){
+  if(!studentKey||!knownStudents.includes(studentKey)){
+    document.querySelector('#profileHead').innerHTML='<div class="reflection-empty">找不到這位學生，請確認網址是否正確（例如 student.html?name=eric）。</div>';
+    return;
+  }
+  const displayName=studentKey.charAt(0).toUpperCase()+studentKey.slice(1);
+  const grade=studentGradeMap[studentKey];
+  const myWorks=works.filter(w=>w.student.toLowerCase()===studentKey);
+
+  const {files,error}=await loadFileList();
+  if(error){
+    document.querySelector('#profileHead').innerHTML=`<div class="reflection-empty">抓取失敗：${error}</div>`;
+    return;
+  }
+
+  // avatar
+  let avatarUrl=null;
+  const avatarFile=files.find(p=>{
+    const m=p.match(/^days\/_avatar\/([^\/]+)$/);
+    if(!m)return false;
+    return m[1].toLowerCase().startsWith(studentKey);
+  });
+  if(avatarFile)avatarUrl=avatarFile;
+
+  document.querySelector('#profileHead').innerHTML=`
+    ${avatarUrl?`<img src="${avatarUrl}" class="profile-avatar" alt="${displayName}">`:`<div class="profile-avatar">${displayName[0]}</div>`}
+    <div><h1 class="profile-name">${displayName}${grade?`<span class="grade-tag">${grade}</span>`:''}</h1><div class="profile-stats" id="profileStats"></div></div>
+  `;
+  document.querySelector('#tabs').style.display='flex';
+
+  // videos
+  const videoGrid=document.querySelector('#videoGrid');
+  if(myWorks.length){
+    videoGrid.innerHTML=myWorks.map(w=>`<article class="film">${lazyFrameHtml(w.id)}<div class="film-info"><span>${w.topic}</span><h3>${w.title}</h3><p>${w.desc}</p></div></article>`).join('');
+    bindLazyFrames();
+  }else{
+    videoGrid.innerHTML='<div class="reflection-empty">目前還沒有已確認的影片。</div>';
+  }
+
+  // reflections
+  const tree=buildDaysTree(files);
+  const dayFolders=Object.keys(tree).filter(k=>!k.startsWith('_')).sort((a,b)=>a.localeCompare(b,undefined,{numeric:true}));
+  const reflectionEntries=[];
+  for(const folder of dayFolders){
+    const dayFiles=tree[folder];
+    const txtFile=dayFiles.find(f=>f.toLowerCase()===`${studentKey}.txt`);
+    if(!txtFile)continue;
+    const photoFiles=dayFiles.filter(f=>{
+      const m=f.match(/^([a-zA-Z]+).*\.(jpe?g|png|webp)$/i);
+      return m&&m[1].toLowerCase()===studentKey;
+    }).sort();
+    let text='';
+    try{const r=await fetch(`days/${folder}/${txtFile}`,{cache:'no-store'});if(r.ok)text=(await r.text()).trim();}catch(e){}
+    if(text)reflectionEntries.push({folder,photo:photoFiles[0]?`days/${folder}/${photoFiles[0]}`:null,text});
+  }
+  const reflectionGrid=document.querySelector('#reflectionGrid');
+  if(reflectionEntries.length){
+    reflectionGrid.innerHTML=reflectionEntries.map(r=>`<article class="reflection-card">${r.photo?`<img src="${r.photo}" alt="${displayName}">`:''}<div class="reflection-body"><div class="day-tag">${formatDayTitle(r.folder)}</div><p class="reflection-text">${r.text.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}</p></div></article>`).join('');
+  }else{
+    reflectionGrid.innerHTML='<div class="reflection-empty">目前還沒有心得紀錄。</div>';
+  }
+
+  // photos (gallery/)
+  const galleryPhotos=files.filter(p=>{
+    const m=p.match(/^gallery\/[^\/]+\/([^\/]+)$/);
+    if(!m)return false;
+    if(!/\.(jpe?g|png|webp)$/i.test(m[1]))return false;
+    return detectStudent(m[1])===studentKey;
+  });
+  const photoGrid=document.querySelector('#photoGrid');
+  if(galleryPhotos.length){
+    photoGrid.innerHTML=galleryPhotos.map(p=>`<div class="photo-item"><img src="${p}" loading="lazy" alt="Photo" onclick="openLightbox('${p}')"></div>`).join('');
+  }else{
+    photoGrid.innerHTML='<div class="reflection-empty">目前還沒有標記給這位學生的相簿照片。</div>';
+  }
+
+  // stats
+  document.querySelector('#profileStats').textContent=`${myWorks.length} 支影片 · ${reflectionEntries.length} 篇心得 · ${galleryPhotos.length} 張標記照片`;
+
+  // about
+  document.querySelector('#aboutText').textContent=`${displayName}${grade?`（${grade}）`:''} 參與了這趟墨爾本遊留學，完成了 ${myWorks.length} 支自製影片與 ${reflectionEntries.length} 篇每日心得。點上方分頁可以瀏覽所有作品、心得與照片。`;
+}
+init();
+</script>
+</body></html>
