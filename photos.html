@@ -49,16 +49,16 @@ footer.footer{border-top:1px solid var(--line);padding:25px 0;color:var(--muted)
 </head>
 <body>
 <nav class="nav"><div class="wrap navin"><a class="brand" href="index.html">DALI STUDY</a><div class="navlinks"><a href="index.html">Home</a></div></div></nav>
-<header class="top"><div class="wrap"><div class="eyebrow">Photo Gallery</div><h1>All the moments, in one place.</h1><p>可以用下方按鈕篩選特定學生或特定日期的照片。預設每天只顯示部分照片，點「顯示這天全部」可以展開；切到某一天的標籤，會直接完整顯示那一天。點照片可以放大瀏覽，右下角的圖示可以單張下載；勾選多張後，畫面下方會出現「打包下載」的按鈕。</p></div></header>
+<header class="top"><div class="wrap"><div class="eyebrow">Photo Gallery</div><h1>All the moments, in one place.</h1><p>可以用下方按鈕篩選特定學生或特定日期的照片。預設每天只顯示部分照片，點「顯示這天全部」可以展開；切到某一天的標籤，會直接完整顯示那一天。點照片可以放大瀏覽並儲存到相簿；勾選多張後，畫面下方會出現「儲存選取的照片」按鈕，會直接開啟分享選單，選「儲存 N 張影像」就能一次存進手機相簿。</p></div></header>
 <main><div class="wrap"><div class="filters" id="dayFilter"></div><div class="filters" id="studentFilter"></div><div id="galleryContainer"><div class="reflection-empty">正在讀取所有照片⋯</div></div></div></main>
 <footer class="footer"><div class="wrap"><span>DALI STUDY · Melbourne Student Film Showcase 2026</span><span>Photo Gallery</span></div></footer>
 
 <div class="lightbox" id="lightbox">
   <button class="lb-close" id="lbClose">&times;</button>
   <img id="lbImg" src="" alt="">
-  <a class="btn lb-dl" id="lbDownload" href="#" download>下載這張</a>
+  <button class="btn lb-dl" id="lbDownload">儲存到相簿</button>
 </div>
-<div class="selbar" id="selbar"><div class="wrap"><div class="count" id="selCount">已選擇 0 張</div><div class="actions"><button class="btn ghost" id="clearSel">清除選取</button><button class="btn" id="downloadSel">打包下載選取的照片</button></div></div></div>
+<div class="selbar" id="selbar"><div class="wrap"><div class="count" id="selCount">已選擇 0 張</div><div class="actions"><button class="btn ghost" id="clearSel">清除選取</button><button class="btn" id="downloadSel">儲存選取的照片</button></div></div></div>
 <div class="progress" id="progress">正在打包照片⋯<br>請稍候，張數多可能需要一點時間</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
@@ -101,37 +101,58 @@ function toggleSelect(item,src){
 function openLightbox(src){
   document.querySelector('#lbImg').src=src;
   const dl=document.querySelector('#lbDownload');
-  dl.href=src;dl.download=src.split('/').pop();
+  dl.dataset.src=src;
   document.querySelector('#lightbox').classList.add('show');
+}
+
+async function fetchAsFile(src){
+  const res=await fetch(src);
+  const blob=await res.blob();
+  const name=src.split('/').pop();
+  return new File([blob],name,{type:blob.type||'image/jpeg'});
+}
+
+async function zipAndDownload(filesArr){
+  const progress=document.querySelector('#progress');
+  const zip=new JSZip();
+  filesArr.forEach(f=>zip.file(f.name,f));
+  progress.innerHTML='正在產生 zip 檔⋯';
+  const content=await zip.generateAsync({type:'blob'});
+  const url=URL.createObjectURL(content);
+  const a=document.createElement('a');
+  a.href=url;a.download='photos.zip';
+  document.body.appendChild(a);a.click();a.remove();
+  URL.revokeObjectURL(url);
+}
+
+async function shareOrDownload(srcs,fallbackLabel){
+  const progress=document.querySelector('#progress');
+  progress.classList.add('show');
+  try{
+    const filesArr=[];
+    let i=0;
+    for(const src of srcs){
+      i++;
+      progress.innerHTML=`正在準備照片⋯ (${i}/${srcs.length})`;
+      try{filesArr.push(await fetchAsFile(src));}catch(e){}
+    }
+    if(!filesArr.length)throw new Error('no files');
+    if(navigator.canShare&&navigator.canShare({files:filesArr})){
+      progress.classList.remove('show');
+      await navigator.share({files:filesArr});
+      return;
+    }
+    progress.innerHTML=`瀏覽器不支援直接分享，改用打包下載⋯`;
+    await zipAndDownload(filesArr);
+  }catch(e){
+    if(e.name!=='AbortError')alert(`${fallbackLabel}失敗，請稍後再試。`);
+  }
+  progress.classList.remove('show');
 }
 
 async function downloadSelected(){
   if(!selected.size)return;
-  const progress=document.querySelector('#progress');
-  progress.classList.add('show');
-  try{
-    const zip=new JSZip();
-    let i=0;
-    for(const src of selected){
-      i++;
-      progress.innerHTML=`正在打包照片⋯ (${i}/${selected.size})<br>請稍候，張數多可能需要一點時間`;
-      try{
-        const res=await fetch(src);
-        const blob=await res.blob();
-        zip.file(src.split('/').pop(),blob);
-      }catch(e){}
-    }
-    progress.innerHTML='正在產生 zip 檔⋯';
-    const content=await zip.generateAsync({type:'blob'});
-    const url=URL.createObjectURL(content);
-    const a=document.createElement('a');
-    a.href=url;a.download='photos.zip';
-    document.body.appendChild(a);a.click();a.remove();
-    URL.revokeObjectURL(url);
-  }catch(e){
-    alert('打包失敗，請稍後再試，或改用單張下載。');
-  }
-  progress.classList.remove('show');
+  await shareOrDownload([...selected],'分享/下載');
 }
 
 const knownStudents=['amy','eason','eric','frankie','lawrence','louis','phoebe','sasa'];
@@ -178,7 +199,7 @@ function renderPhotos(){
     const expanded=singleDayView||expandedDays.has(folder);
     const photos=expanded?allPhotos:allPhotos.slice(0,DEFAULT_LIMIT);
     const showMoreBtn=!expanded&&allPhotos.length>DEFAULT_LIMIT?`<div class="showmore"><button class="btn ghost" data-expand="${folder}">顯示這天全部 ${allPhotos.length} 張</button></div>`:'';
-    return `<section class="day-block"><h2>${formatDayTitle(folder)}<span class="count">${allPhotos.length} 張</span></h2><div class="photo-grid">${photos.map(src=>`<div class="photo-item" data-src="${src}"><div class="check"><svg viewBox="0 0 24 24"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg></div><img src="${src}" loading="lazy" alt="Photo"><a class="dl-btn" href="${src}" download title="下載這張" onclick="event.stopPropagation()">⬇</a></div>`).join('')}</div>${showMoreBtn}</section>`;
+    return `<section class="day-block"><h2>${formatDayTitle(folder)}<span class="count">${allPhotos.length} 張</span></h2><div class="photo-grid">${photos.map(src=>`<div class="photo-item" data-src="${src}"><div class="check"><svg viewBox="0 0 24 24"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg></div><img src="${src}" loading="lazy" alt="Photo"></div>`).join('')}</div>${showMoreBtn}</section>`;
   }).join('');
   document.querySelectorAll('.photo-item').forEach(item=>{
     const src=item.dataset.src;
@@ -208,6 +229,7 @@ async function renderGallery(){
 }
 
 document.querySelector('#lbClose').onclick=()=>document.querySelector('#lightbox').classList.remove('show');
+document.querySelector('#lbDownload').onclick=()=>{const src=document.querySelector('#lbDownload').dataset.src;if(src)shareOrDownload([src],'儲存');};
 document.querySelector('#lightbox').onclick=e=>{if(e.target.id==='lightbox')e.target.classList.remove('show');};
 document.querySelector('#clearSel').onclick=()=>{selected.clear();document.querySelectorAll('.photo-item.selected').forEach(el=>el.classList.remove('selected'));updateSelBar();};
 document.querySelector('#downloadSel').onclick=downloadSelected;
