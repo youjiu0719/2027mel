@@ -29,6 +29,11 @@ main{padding-bottom:140px}
 .dl-btn{position:absolute;bottom:8px;right:8px;width:30px;height:30px;border-radius:50%;background:#000000b0;border:1px solid #ffffff42;display:grid;place-items:center;z-index:2;color:#fff}
 .dl-btn:hover{background:var(--accent);color:#10120e;border-color:var(--accent)}
 .reflection-empty{border:1px dashed var(--line);border-radius:18px;padding:24px;color:var(--muted);text-align:center}
+@keyframes skeleton-shimmer{0%{background-position:100% 50%}100%{background-position:0 50%}}
+.skeleton{background:linear-gradient(90deg,var(--panel2) 25%,#1f231f 37%,var(--panel2) 63%);background-size:400% 100%;animation:skeleton-shimmer 1.6s ease infinite}
+.sk-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.sk-item{aspect-ratio:1/1;border-radius:12px}
+@media(max-width:560px){.sk-grid{grid-template-columns:repeat(auto-fill,minmax(105px,1fr))}}
 .selbar{position:fixed;left:0;right:0;bottom:0;z-index:40;background:#0c0e0cf2;backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:14px 0;transform:translateY(100%);transition:transform .25s}
 .selbar.show{transform:translateY(0)}
 .selbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
@@ -55,7 +60,7 @@ footer.footer{border-top:1px solid var(--line);padding:25px 0;color:var(--muted)
 <body>
 <nav class="nav"><div class="wrap navin"><a class="brand" href="index.html">DALI STUDY</a><div class="navlinks"><a href="index.html">Home</a></div></div></nav>
 <header class="top"><div class="wrap"><div class="eyebrow">Photo Gallery</div><h1>All the moments, in one place.</h1><p>可以用下方按鈕篩選特定學生或特定日期的照片。預設每天只顯示部分照片，點「顯示這天全部」可以展開；切到某一天的標籤，會直接完整顯示那一天。點照片可以放大瀏覽並儲存到相簿；勾選多張後，畫面下方會出現「儲存選取的照片」按鈕，會直接開啟分享選單，選「儲存 N 張影像」就能一次存進手機相簿。</p></div></header>
-<main><div class="wrap"><div class="filters" id="dayFilter"></div><div class="filters" id="studentFilter"></div><div id="galleryContainer"><div class="reflection-empty">正在讀取所有照片⋯</div></div></div></main>
+<main><div class="wrap"><div class="filters" id="dayFilter"></div><div class="filters" id="studentFilter"></div><div id="galleryContainer"><div class="sk-grid"><div class="sk-item skeleton"></div><div class="sk-item skeleton"></div><div class="sk-item skeleton"></div><div class="sk-item skeleton"></div><div class="sk-item skeleton"></div><div class="sk-item skeleton"></div><div class="sk-item skeleton"></div><div class="sk-item skeleton"></div><div class="sk-item skeleton"></div><div class="sk-item skeleton"></div><div class="sk-item skeleton"></div><div class="sk-item skeleton"></div><div class="sk-item skeleton"></div><div class="sk-item skeleton"></div><div class="sk-item skeleton"></div><div class="sk-item skeleton"></div><div class="sk-item skeleton"></div><div class="sk-item skeleton"></div></div></div></div></main>
 <footer class="footer"><div class="wrap"><span>DALI STUDY · Melbourne Student Film Showcase 2026</span><span>Photo Gallery</span></div></footer>
 
 <div class="lightbox" id="lightbox">

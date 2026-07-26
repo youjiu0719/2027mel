@@ -41,6 +41,10 @@ main{padding-bottom:120px;min-height:50vh}
 .photo-item{aspect-ratio:1/1;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:var(--panel2)}
 .photo-item img{width:100%;height:100%;object-fit:cover;display:block;cursor:pointer}
 .reflection-empty{border:1px dashed var(--line);border-radius:18px;padding:24px;color:var(--muted);grid-column:1/-1;text-align:center}
+@keyframes skeleton-shimmer{0%{background-position:100% 50%}100%{background-position:0 50%}}
+.skeleton{background:linear-gradient(90deg,var(--panel) 25%,var(--panel2) 37%,var(--panel) 63%);background-size:400% 100%;animation:skeleton-shimmer 1.6s ease infinite}
+.sk-avatar{width:96px;height:96px;border-radius:50%}
+.sk-line{height:1em;border-radius:6px}
 .lightbox{position:fixed;inset:0;z-index:50;background:#000000ee;display:none;align-items:center;justify-content:center;padding:24px}
 .lightbox.show{display:flex}.lightbox img{max-width:92vw;max-height:85vh;border-radius:8px}
 .lightbox .lb-close{position:absolute;top:20px;right:24px;color:#fff;font-size:2rem;background:none;border:none}
@@ -52,7 +56,7 @@ footer.footer{border-top:1px solid var(--line);padding:25px 0;color:var(--muted)
 <body>
 <nav class="nav"><div class="wrap navin"><a class="brand" href="index.html">DALI STUDY</a><a class="back" href="index.html#creators">← Back to Creators</a></div></nav>
 <div class="wrap">
-<div class="profile-head" id="profileHead"><div class="reflection-empty">正在讀取學生資料⋯</div></div>
+<div class="profile-head" id="profileHead"><div class="sk-avatar skeleton"></div><div style="flex:1"><div class="sk-line skeleton" style="width:180px;height:2.2rem;margin-bottom:10px"></div><div class="sk-line skeleton" style="width:260px"></div></div></div>
 <div class="tabs" id="tabs" style="display:none">
   <button class="tab-btn active" data-tab="about">About</button>
   <button class="tab-btn" data-tab="videos">所有影片</button>
@@ -60,7 +64,7 @@ footer.footer{border-top:1px solid var(--line);padding:25px 0;color:var(--muted)
   <button class="tab-btn" data-tab="photos">全部照片</button>
 </div>
 <main>
-  <div class="tab-panel active" id="panel-about"><p class="about-text" id="aboutText">正在讀取⋯</p></div>
+  <div class="tab-panel active" id="panel-about"><div class="sk-line skeleton" style="width:90%;margin-bottom:10px"></div><div class="sk-line skeleton" style="width:70%"></div><p class="about-text" id="aboutText" style="display:none"></p></div>
   <div class="tab-panel" id="panel-videos"><div class="film-grid" id="videoGrid"></div></div>
   <div class="tab-panel" id="panel-reflections"><div class="reflection-grid" id="reflectionGrid"></div></div>
   <div class="tab-panel" id="panel-photos"><div class="photo-grid" id="photoGrid"></div></div>
@@ -191,6 +195,8 @@ async function init(){
 
   // about
   document.querySelector('#aboutText').textContent=`${displayName}${grade?`（${grade}）`:''} 參與了這趟墨爾本遊留學，完成了 ${myWorks.length} 支自製影片與 ${reflectionEntries.length} 篇每日心得。點上方分頁可以瀏覽所有作品、心得與照片。`;
+  document.querySelectorAll('#panel-about .sk-line').forEach(el=>el.style.display='none');
+  document.querySelector('#aboutText').style.display='block';
 }
 init();
 </script>
