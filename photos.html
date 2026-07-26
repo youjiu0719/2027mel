@@ -40,6 +40,10 @@ main{padding-bottom:140px}
 .lightbox.show{display:flex}
 .lightbox img{max-width:92vw;max-height:80vh;border-radius:8px}
 .lightbox .lb-close{position:absolute;top:20px;right:24px;color:#fff;font-size:2rem;background:none;border:none}
+.lb-nav{position:absolute;top:50%;transform:translateY(-50%);width:52px;height:52px;border-radius:50%;background:#000000a0;border:1px solid #ffffff42;color:#fff;font-size:2rem;line-height:1;display:grid;place-items:center;cursor:pointer}
+.lb-nav:hover{background:var(--accent);color:#10120e;border-color:var(--accent)}
+.lb-prev{left:16px}.lb-next{right:16px}
+@media(max-width:560px){.lb-nav{width:42px;height:42px;font-size:1.6rem}.lb-prev{left:6px}.lb-next{right:6px}}
 .lightbox .lb-dl{position:absolute;bottom:24px;left:50%;transform:translateX(-50%)}
 .progress{position:fixed;inset:0;z-index:60;background:#000000cc;display:none;align-items:center;justify-content:center;color:#fff;font-size:1.1rem;text-align:center;padding:20px}
 .progress.show{display:flex}
@@ -55,7 +59,9 @@ footer.footer{border-top:1px solid var(--line);padding:25px 0;color:var(--muted)
 
 <div class="lightbox" id="lightbox">
   <button class="lb-close" id="lbClose">&times;</button>
+  <button class="lb-nav lb-prev" id="lbPrev" aria-label="上一張">‹</button>
   <img id="lbImg" src="" alt="">
+  <button class="lb-nav lb-next" id="lbNext" aria-label="下一張">›</button>
   <button class="btn lb-dl" id="lbDownload">儲存到相簿</button>
 </div>
 <div class="selbar" id="selbar"><div class="wrap"><div class="count" id="selCount">已選擇 0 張</div><div class="actions"><button class="btn ghost" id="clearSel">清除選取</button><button class="btn" id="downloadSel">儲存選取的照片</button></div></div></div>
@@ -98,10 +104,20 @@ function toggleSelect(item,src){
   updateSelBar();
 }
 
-function openLightbox(src){
+let currentGalleryList=[];
+let lightboxIndex=-1;
+
+function showLightboxAt(index){
+  if(!currentGalleryList.length)return;
+  lightboxIndex=(index+currentGalleryList.length)%currentGalleryList.length;
+  const src=currentGalleryList[lightboxIndex];
   document.querySelector('#lbImg').src=src;
-  const dl=document.querySelector('#lbDownload');
-  dl.dataset.src=src;
+  document.querySelector('#lbDownload').dataset.src=src;
+}
+
+function openLightbox(src){
+  const idx=currentGalleryList.indexOf(src);
+  showLightboxAt(idx<0?0:idx);
   document.querySelector('#lightbox').classList.add('show');
 }
 
@@ -208,6 +224,7 @@ function renderPhotos(){
     if(selected.has(src))item.classList.add('selected');
   });
   document.querySelectorAll('[data-expand]').forEach(b=>b.onclick=()=>{expandedDays.add(b.dataset.expand);renderPhotos();});
+  currentGalleryList=[...document.querySelectorAll('.photo-item')].map(el=>el.dataset.src);
 }
 
 async function renderGallery(){
@@ -229,6 +246,14 @@ async function renderGallery(){
 }
 
 document.querySelector('#lbClose').onclick=()=>document.querySelector('#lightbox').classList.remove('show');
+document.querySelector('#lbPrev').onclick=()=>showLightboxAt(lightboxIndex-1);
+document.querySelector('#lbNext').onclick=()=>showLightboxAt(lightboxIndex+1);
+document.addEventListener('keydown',e=>{
+  if(!document.querySelector('#lightbox').classList.contains('show'))return;
+  if(e.key==='ArrowLeft')showLightboxAt(lightboxIndex-1);
+  else if(e.key==='ArrowRight')showLightboxAt(lightboxIndex+1);
+  else if(e.key==='Escape')document.querySelector('#lightbox').classList.remove('show');
+});
 document.querySelector('#lbDownload').onclick=()=>{const src=document.querySelector('#lbDownload').dataset.src;if(src)shareOrDownload([src],'儲存');};
 document.querySelector('#lightbox').onclick=e=>{if(e.target.id==='lightbox')e.target.classList.remove('show');};
 document.querySelector('#clearSel').onclick=()=>{selected.clear();document.querySelectorAll('.photo-item.selected').forEach(el=>el.classList.remove('selected'));updateSelBar();};
