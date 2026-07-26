@@ -64,6 +64,12 @@ const works=[
 {student:'Eason',topic:'Vlog',title:'Melbourne Breakfast Vlog 2',id:'XjTIejuVuD4',desc:'與 Frankie 合作的第二支早餐 vlog，記錄墨爾本的日常步調。',verified:true}
 ];
 
+const teachingVideos=[
+{title:'Hosier Lane',id:'pzLdNGH4qwc',desc:'從塗鴉街的歷史與故事說起，帶大家認識這個充滿藝術能量的巷弄。'},
+{title:'The University of Melbourne',id:'OcYQRtqDYZM',desc:'介紹墨爾本大學的校園背景與故事，補充學生參訪時沒提到的細節。'},
+{title:'Flinders Street Station',id:'GSuttIwNFKY',desc:'從車站的歷史說起，帶大家認識這座墨爾本市區的地標建築。'}
+];
+
 function formatDayTitle(folderName){
   const m=folderName.match(/^(\d+)[-_](.+)$/);
   if(!m)return folderName;
