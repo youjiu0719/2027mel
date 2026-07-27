@@ -69,8 +69,7 @@ const teachingVideos=[
 {title:'The University of Melbourne',id:'OcYQRtqDYZM',desc:'介紹墨爾本大學的校園背景與故事，補充學生參訪時沒提到的細節。'},
 {title:'Flinders Street Station',id:'GSuttIwNFKY',desc:'從車站的歷史說起，帶大家認識這座墨爾本市區的地標建築。'},
 {title:'National Gallery of Victoria',id:'q94BhAclOb4',desc:'介紹 NGV 美術館的館藏與故事，補充學生參訪時沒提到的細節。'},
-{title:'RMIT',id:'99RFujwmd0k',desc:'介紹 RMIT 校園的背景與設計故事，補充學生參訪時沒提到的細節。'},
-{title:'Federation Square',id:'V4K0Rs8EAT8',desc:'介紹聯邦廣場的歷史與建築故事，補充學生參訪時沒提到的細節。'}
+{title:'RMIT',id:'99RFujwmd0k',desc:'介紹 RMIT 校園的背景與設計故事，補充學生參訪時沒提到的細節。'}
 ];
 
 function formatDayTitle(folderName){
