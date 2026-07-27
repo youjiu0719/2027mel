@@ -126,7 +126,7 @@ async function init(){
   const grade=studentGradeMap[studentKey];
   const myWorks=works.filter(w=>w.student.toLowerCase()===studentKey);
 
-  const {files,error}=await loadFileList(['days']);
+  const {files,error}=await loadFileList(['days','about','feedback']);
   if(error){
     document.querySelector('#profileHead').innerHTML=`<div class="reflection-empty">抓取失敗：${error}</div>`;
     return;
