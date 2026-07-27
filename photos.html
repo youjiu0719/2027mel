@@ -220,7 +220,7 @@ function renderPhotos(){
 
 async function renderGallery(){
   const container=document.querySelector('#galleryContainer');
-  const {files,error}=await loadFileList();
+  const {files,error}=await loadFileList(['gallery']);
   if(error){container.innerHTML=`<div class="reflection-empty">抓取失敗：${error}</div>`;return;}
   galleryData=[];
   for(const path of files){
