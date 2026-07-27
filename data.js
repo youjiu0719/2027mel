@@ -42,7 +42,7 @@ const works=[
 {student:'Louis',topic:'Vlog',title:'Melbourne Breakfast Vlog',id:'PT5n0S2PMUo',desc:'以快轉方式記錄第一次自己煎牛排，從熱鍋、翻面到搭配蒜片擺盤，完成一份約七分熟的蒜片牛排早餐。',verified:true},
 {student:'Frankie',topic:'Campus',title:'RMIT University',id:'7lqEnLICljs',desc:'從特色午餐展開 RMIT 行程，參觀機械手臂與 3D 列印技術，再透過校園導覽觀察幾何外牆、人臉造型建築及公共休憩空間。',verified:true},
 {student:'Frankie',topic:'Campus',title:'The University of Melbourne',id:'YmcVV5JAGA8',desc:'與 Eason 記錄身分地圖及非營利組織創業挑戰課程，並在校園導覽中探索歷史建築、蜜蜂旅館與自然空間。',verified:true},
-{student:'Frankie',topic:'Cooking',title:'Hospitality Training',id:'AO1iiXFGmh4',desc:'穿上廚師服學習揉製麵團、烹調培根蛋醬義大利麵與可麗餅，完成料理後再以電車資訊按鈕與返程畫面收錄當日交通體驗。',verified:true},
+{student:'Frankie',topic:'Cooking',title:'Hospitality Training',id:'vVnTsxr_BoI',desc:'穿上廚師服學習揉製麵團、烹調培根蛋醬義大利麵與可麗餅，完成料理後再以電車資訊按鈕與返程畫面收錄當日交通體驗。',verified:true},
 {student:'Frankie',topic:'City',title:'State Library Victoria',id:'HsYwLh6qD9Q',desc:'走進穹頂閱讀室翻閱館藏書籍，探索館內畫廊、Ned Kelly 盔甲與趣味動物雕塑，呈現圖書館結合閱讀、歷史與藝術的一面。',verified:true},
 {student:'Frankie',topic:'Media',title:'ACMI',id:'erSd6FhoQf4',desc:'與 Eason 從 Box Hill 搭火車前往 ACMI，沿途介紹 Flinders Street Station，再體驗電影台詞互動、幻影箱與每秒24格的動畫原理。',verified:true},
 {student:'Frankie',topic:'Art',title:'NGV & Hosier Lane',id:'pH8g7z2NIgY',desc:'先記錄 Hosier Lane 不斷變化的街頭塗鴉，再走進 NGV 欣賞大型南瓜、彩色玻璃天花板、埃及文物與數位藝術作品。',verified:true},
