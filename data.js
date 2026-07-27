@@ -1,3 +1,4 @@
+@ -0,0 +1,116 @@
 // ============ 共用設定與資料 ============
 // 這個檔案被 index.html、photos.html、student.html 共用。
 // 之後要更新影片總清單、學生年級,只要改這個檔案就好,三個頁面會一起同步。
@@ -82,36 +83,13 @@ function formatDayTitle(folderName){
   return `Day ${num} · ${slug}`;
 }
 
-async function ghGetRootTree(){
+async function ghApiFallback(){
   try{
-    const r=await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/git/trees/${REPO_BRANCH}`,{cache:'no-store'});
-    if(!r.ok)return {tree:[],error:`GitHub API 失敗(狀態碼 ${r.status})`};
-    const j=await r.json();
-    return {tree:j.tree||[],error:null};
-  }catch(e){return {tree:[],error:`GitHub API 失敗:${e.message}`};}
-}
-
-async function ghGetSubtreeFiles(sha,prefix){
-  try{
-    const r=await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/git/trees/${sha}?recursive=1`,{cache:'no-store'});
+    const r=await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/git/trees/${REPO_BRANCH}?recursive=1`,{cache:'no-store'});
     if(!r.ok)return {files:[],error:`GitHub API 失敗(狀態碼 ${r.status})`};
     const j=await r.json();
-    return {files:(j.tree||[]).filter(e=>e.type==='blob').map(e=>`${prefix}/${e.path}`),error:null};
+    return {files:(j.tree||[]).filter(e=>e.type==='blob').map(e=>e.path),error:null};
   }catch(e){return {files:[],error:`GitHub API 失敗:${e.message}`};}
-}
-
-async function ghApiFallback(folders){
-  const {tree,error}=await ghGetRootTree();
-  if(error)return {files:[],error};
-  let files=[];
-  for(const name of folders){
-    const entry=tree.find(e=>e.path===name&&e.type==='tree');
-    if(!entry)continue;
-    const {files:sub,error:subErr}=await ghGetSubtreeFiles(entry.sha,name);
-    if(subErr)return {files:[],error:subErr};
-    files=files.concat(sub);
-  }
-  return {files,error:null};
 }
 
 async function getRepoFileList(){
@@ -123,14 +101,12 @@ async function getRepoFileList(){
   }catch(e){return {files:[],error:`網路請求失敗:${e.message}`};}
 }
 
-async function loadFileList(folders=['days','behind','highlights','gallery']){
-  let {files,error}=await ghApiFallback(folders);
+async function loadFileList(){
+  let {files,error}=await ghApiFallback();
   if(error){
     const fallback=await getRepoFileList();
-    if(!fallback.error){
-      files=fallback.files.filter(p=>folders.some(f=>p.startsWith(`${f}/`)));
-      error=null;
-    }else{error=`${error}；${fallback.error}`;}
+    if(!fallback.error){files=fallback.files;error=null;}
+    else{error=`${error}；${fallback.error}`;}
   }
   return {files,error};
 }
