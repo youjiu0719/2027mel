@@ -247,6 +247,7 @@ async function renderHighlights(fileList){
 }
 async function initAll(){
   const {files:fileList,error}=await loadFileList();
+  console.log(fileList);
   if(error){
     document.querySelector('#daysContainer').innerHTML=`<section class="day-journal"><div class="wrap"><div class="reflection-empty">抓取失敗：${error}</div></div></section>`;
     document.querySelector('#behindContainer').innerHTML=`<div class="reflection-empty">抓取失敗：${error}</div>`;
