@@ -193,8 +193,8 @@ function renderBehind(fileList){
   const files=fileList.filter(p=>p.startsWith('behind/')).map(p=>p.slice('behind/'.length));
   const find=prefix=>files.find(f=>f.toLowerCase().startsWith(prefix));
   const slot=(file,label,title,desc)=>file?`<article class="bts-feature"><img src="behind/${file}" alt="${title}"><div class="overlay"><small>${label}</small><h3>${title}</h3><p>${desc}</p></div></article>`:`<article class="bts-feature bts-placeholder"><div class="reflection-empty">尚未上傳「${label}」的照片(檔名開頭要是 ${label==='QUEEN VICTORIA MARKET'?'market':label.includes('GROUP 1')?'nop1':'nop2'}，放進 behind/ 資料夾)</div></article>`;
-  const nop1=find('nop1'),nop2=find('nop2'),market=find('market');
-  container.innerHTML=`<div class="bts-grid bts-grid-nop">${slot(nop1,'UNIVERSITY OF MELBOURNE · GROUP 1','第一次合作，共同完成議題提案','NOP 議題討論中，學生練習提出觀點、傾聽隊友，並把不同想法整理成一份共同成果。')}${slot(nop2,'UNIVERSITY OF MELBOURNE · GROUP 2','第二組的議題提案','不同組別各自討論、整理觀點，練習用團隊的方式完成一份提案。')}</div><div class="bts-wide">${slot(market,'QUEEN VICTORIA MARKET','在市場裡找到很酷的店','主動探索、停下觀察，找到自己真正想記錄的內容。')}</div>`;
+  const nop1=find('nop1'),nop2=find('nop2'),market=find('market'),hospitality=find('hospitality training'),kiosk=find('self-service kiosk');
+container.innerHTML=`<div class="bts-grid bts-grid-nop">${slot(nop1,'UNIVERSITY OF MELBOURNE · GROUP 1','第一次合作，共同完成議題提案','NOP 議題討論中，學生練習提出觀點、傾聽隊友，並把不同想法整理成一份共同成果。')}${slot(nop2,'UNIVERSITY OF MELBOURNE · GROUP 2','第二組的議題提案','不同組別各自討論、整理觀點，練習用團隊的方式完成一份提案。')}</div><div class="bts-wide">${slot(market,'QUEEN VICTORIA MARKET','在市場裡找到很酷的店','主動探索、停下觀察，找到自己真正想記錄的內容。')}</div><div class="bts-grid bts-grid-nop">${slot(hospitality,'HOSPITALITY TRAINING','彼此協助，完成料理影片','輪流成為彼此的攝影夥伴，在合作中完成自己的料理紀錄。')}${slot(kiosk,'SELF-SERVICE KIOSK','第一次操作英文自助點餐機','閱讀英文品項、選擇口味，獨立完成一次真實的生活任務。')}</div>`;
 }
 async function renderHighlights(fileList){
   const container=document.querySelector('#highlightsGrid');
