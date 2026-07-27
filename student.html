@@ -35,12 +35,11 @@ main{padding-bottom:120px;min-height:50vh}
 .play-btn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:56px;height:56px;border-radius:50%;background:#000000b0;border:2px solid #ffffffcc;color:#fff;font-size:1.3rem;display:grid;place-items:center;padding-left:4px}
 .frame:hover .play-btn{background:var(--accent);color:#10120e;border-color:var(--accent)}
 .film-info{padding:16px}.film-info span{color:var(--accent);font-size:.76rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase}.film-info h3{font-size:1.15rem;margin:6px 0 4px}.film-info p{margin:0;color:var(--muted);font-size:.88rem}
-.reflection-grid{display:flex;flex-direction:column;gap:16px;max-width:940px}
-.reflection-card{display:grid;grid-template-columns:minmax(220px,34%) 1fr;min-height:230px;border:1px solid var(--line);background:linear-gradient(135deg,var(--panel),#0d0f0d);border-radius:22px;overflow:hidden}
-.reflection-card img{width:100%;height:100%;min-height:230px;object-fit:cover;display:block}
-.reflection-card.no-photo{grid-template-columns:1fr}
-.reflection-body{padding:28px 30px;display:flex;flex-direction:column;justify-content:center}.reflection-body .day-tag{color:var(--accent);font-weight:800;font-size:.76rem;letter-spacing:.12em;text-transform:uppercase}
-.reflection-text{white-space:pre-wrap;color:#d9dcd7;margin:12px 0 0;font-size:1rem;line-height:1.85;max-width:62ch}
+.reflection-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px}
+.reflection-card{border:1px solid var(--line);background:var(--panel);border-radius:22px;overflow:hidden}
+.reflection-card img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}
+.reflection-body{padding:18px}.reflection-body .day-tag{color:var(--accent);font-weight:800;font-size:.76rem;letter-spacing:.1em;text-transform:uppercase}
+.reflection-text{white-space:pre-wrap;color:#d9dcd7;margin:8px 0 0;font-size:.94rem}
 .photo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
 .photo-item{aspect-ratio:1/1;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:var(--panel2)}
 .photo-item img{width:100%;height:100%;object-fit:cover;display:block;cursor:pointer}
@@ -51,7 +50,7 @@ main{padding-bottom:120px;min-height:50vh}
 .sk-line{height:1em;border-radius:6px}
 footer.footer{border-top:1px solid var(--line);padding:25px 0;color:var(--muted);font-size:.83rem}
 .back-link{display:inline-block;margin:30px 0 10px;color:var(--muted);font-size:.92rem}.back-link:hover{color:var(--accent)}
-@media(max-width:700px){.film-grid{grid-template-columns:repeat(2,1fr)}.reflection-card{grid-template-columns:1fr}.reflection-card img{height:auto;min-height:0;aspect-ratio:16/10}.reflection-body{padding:22px}.reflection-text{font-size:.95rem;line-height:1.75}}
+@media(max-width:700px){.film-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:480px){.film-grid{grid-template-columns:1fr}.profile-head{padding-top:110px}}
 </style>
 </head>
@@ -175,7 +174,7 @@ async function init(){
   }
   const reflectionGrid=document.querySelector('#reflectionGrid');
   if(reflectionEntries.length){
-    reflectionGrid.innerHTML=reflectionEntries.map(r=>`<article class="reflection-card${r.photo?'':' no-photo'}">${r.photo?`<img src="${r.photo}" alt="${displayName}">`:''}<div class="reflection-body"><div class="day-tag">${formatDayTitle(r.folder)}</div><p class="reflection-text">${r.text.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}</p></div></article>`).join('');
+    reflectionGrid.innerHTML=reflectionEntries.map(r=>`<article class="reflection-card">${r.photo?`<img src="${r.photo}" alt="${displayName}">`:''}<div class="reflection-body"><div class="day-tag">${formatDayTitle(r.folder)}</div><p class="reflection-text">${r.text.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}</p></div></article>`).join('');
   }else{
     reflectionGrid.innerHTML='<div class="reflection-empty">目前還沒有心得紀錄。</div>';
   }
