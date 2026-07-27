@@ -68,7 +68,7 @@ const works=[
 
 const teachingVideos=[
 {title:'Flinders Street Station',id:'GSuttIwNFKY',desc:'從建築特色與歷史故事出發，認識這座陪伴墨爾本人成長的重要交通地標。'},
-{title:'Federation Square',id:'V4K0Rs8EAT8',desc:'介紹 介紹 Federation Square 從不被市民接受，到逐漸成為墨爾本城市客廳的轉變故事。'},
+{title:'Federation Square',id:'V4K0Rs8EAT8',desc:'介紹 Federation Square 從不被市民接受，到逐漸成為墨爾本城市客廳的轉變故事。'},
 {title:'National Gallery of Victoria',id:'q94BhAclOb4',desc:'從建築、館藏與展覽空間出發，認識澳洲歷史最悠久的公共美術館。'},
 {title:'Hosier Lane',id:'pzLdNGH4qwc',desc:'從巷弄的發展與街頭藝術文化出發，認識 Hosier Lane 如何成為墨爾本最具代表性的創作空間之一。'},
 {title:'The University of Melbourne',id:'OcYQRtqDYZM',desc:'走進墨爾本大學的歷史與校園故事，認識這所大學如何影響城市的教育與文化發展。'},
