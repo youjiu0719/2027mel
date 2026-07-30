@@ -16,7 +16,7 @@ a{color:inherit;text-decoration:none}button{font:inherit;cursor:pointer}.wrap{wi
 .profile-avatar{width:96px;height:96px;border-radius:50%;object-fit:cover;background:var(--accent);display:grid;place-items:center;font-size:2.4rem;font-weight:900;color:#10120e;flex-shrink:0}
 .profile-name{font-size:clamp(2.2rem,5vw,3.4rem);letter-spacing:-.03em;margin:0}
 .grade-tag{display:inline-block;font-size:.72rem;font-weight:700;color:var(--accent);border:1px solid var(--line);border-radius:999px;padding:3px 10px;vertical-align:middle;margin-left:8px}
-.profile-stats{color:var(--muted);font-size:.95rem;margin-top:6px}
+.profile-stats{color:var(--muted);font-size:.95rem;margin-top:6px;max-width:520px;line-height:1.6}
 .tabs{display:flex;gap:8px;flex-wrap:wrap;border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:34px}
 .tab-btn{border:1px solid var(--line);border-radius:999px;background:transparent;color:#dfe2dd;padding:9px 16px;font-family:inherit;font-size:.92rem}
 .tab-btn.active,.tab-btn:hover{background:var(--accent);border-color:var(--accent);color:#10120e}
@@ -53,13 +53,13 @@ footer.footer{border-top:1px solid var(--line);padding:25px 0;color:var(--muted)
 @media(max-width:700px){.film-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:480px){.film-grid{grid-template-columns:1fr}.profile-head{padding-top:110px}}
 .daphne-letter{max-width:1100px;width:100%;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:30px 32px;position:relative;margin:10px 0 30px}
-.daphne-quote{font-size:2.8rem;color:#e8b04f;line-height:1;font-family:Georgia,serif;position:absolute;top:16px;left:22px;opacity:.55}
+.daphne-quote{font-size:2.8rem;color:var(--lc,#e8b04f);line-height:1;font-family:Georgia,serif;position:absolute;top:16px;left:22px;opacity:.55}
 .daphne-lead{color:var(--text);font-weight:700;font-size:1.32rem;line-height:1.6;margin:26px 0 16px;padding-left:8px}
 .daphne-text{margin:0 0 24px;padding-left:8px;color:#d9dcd7;font-size:1.05rem;line-height:1.8}
 .daphne-text p{margin:0 0 14px}
 .daphne-text p:last-child{margin-bottom:0}
 .daphne-foot{display:flex;align-items:center;gap:12px;border-top:1px solid var(--line);padding-top:16px}
-.daphne-avatar{width:40px;height:40px;border-radius:50%;object-fit:cover;background:#e8b04f}
+.daphne-avatar{width:40px;height:40px;border-radius:50%;object-fit:cover;background:var(--lc,#e8b04f)}
 .daphne-foot span{color:var(--muted);font-size:.95rem}
 .study-box{max-width:1100px;width:100%;margin:10px 0 30px;background:var(--panel2);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:0 14px 14px 0;padding:24px 28px}
 .study-label{color:var(--accent);font-weight:800;font-size:.82rem;letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px}
@@ -127,9 +127,15 @@ const params=new URLSearchParams(location.search);
 const studentKey=(params.get('name')||'').toLowerCase();
 
 // 專門給 Message from teacher 分頁用：
-// 「Message from Daphne」→ 書信卡片(第一句放大加粗當開場白，其餘正常段落)；
+// 「Message from {Name}」→ 書信卡片(第一句放大加粗當開場白，其餘正常段落)；每位寄件人可以有自己的頭像跟顏色。
 // 「學習建議／後續學習建議」→ 專屬框框；其他標題維持一般樣式。
-// 顯示順序固定：Daphne 的話一律排最前面，學習建議排在後面，不受檔案裡實際打字順序影響。
+// 顯示順序固定：LETTER_ORDER 裡的順序 → 學習建議，不受檔案裡實際打字順序影響。
+// 之後要新增新的老師心得，只要在 LETTER_SENDERS 跟 LETTER_ORDER 各加一行就好。
+const LETTER_SENDERS={
+  'message from daphne':{avatar:'days/_avatar/daphne_avatar.jpg',name:'Daphne',color:'#e8b04f'},
+  'message from wendy':{avatar:'days/_avatar/wendy_avatar.jpg',name:'Wendy',color:'#7c93a8'}
+};
+const LETTER_ORDER=['message from daphne','message from wendy'];
 function splitLeadSentence(text){
   const m=text.match(/^(.*?[。！？!?])([\s\S]*)$/);
   if(m)return{lead:m[1],rest:m[2].trim()};
@@ -139,12 +145,13 @@ function renderTeacherText(text){
   const esc=s=>s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
   const STUDY_HEADINGS=['學習建議','後續學習建議'];
   const lines=text.split('\n').map(l=>l.trim()).filter(Boolean);
-  let mode='normal',buffer=[],daphneHtml='',studyHtml='',otherHtml='';
+  let mode='normal',buffer=[],letterHtmlMap={},studyHtml='',otherHtml='';
   const flush=()=>{
-    if(mode==='daphne'&&buffer.length){
+    if(LETTER_SENDERS[mode]&&buffer.length){
       const{lead,rest}=splitLeadSentence(buffer[0]);
       const bodyParas=(rest?[rest]:[]).concat(buffer.slice(1));
-      daphneHtml=`<div class="daphne-letter"><div class="daphne-quote">"</div><p class="daphne-lead">${esc(lead)}</p><div class="daphne-text">${bodyParas.map(p=>`<p>${esc(p)}</p>`).join('')}</div><div class="daphne-foot"><img class="daphne-avatar" src="days/_avatar/daphne_avatar.jpg" alt="Daphne" onerror="this.style.display='none'"><span>— Daphne</span></div></div>`;
+      const s=LETTER_SENDERS[mode];
+      letterHtmlMap[mode]=`<div class="daphne-letter" style="--lc:${s.color}"><div class="daphne-quote">"</div><p class="daphne-lead">${esc(lead)}</p><div class="daphne-text">${bodyParas.map(p=>`<p>${esc(p)}</p>`).join('')}</div><div class="daphne-foot"><img class="daphne-avatar" src="${s.avatar}" alt="${s.name}" onerror="this.style.display='none'"><span>— ${s.name}</span></div></div>`;
     }else if(mode==='study'&&buffer.length){
       studyHtml=`<div class="study-box"><div class="study-label">學習建議</div>${buffer.map(p=>`<p>${esc(p)}</p>`).join('')}</div>`;
     }
@@ -156,16 +163,18 @@ function renderTeacherText(text){
     if(m){
       flush();
       const headingText=m[1].trim();
-      if(headingText.toLowerCase()==='message from daphne')mode='daphne';
+      const headingKey=headingText.toLowerCase();
+      if(LETTER_SENDERS[headingKey])mode=headingKey;
       else if(STUDY_HEADINGS.includes(headingText))mode='study';
       else{otherHtml+=`<div class="about-heading">${esc(headingText)}</div>`;mode='normal';}
       continue;
     }
-    if(mode==='daphne'||mode==='study')buffer.push(line);
+    if(mode!=='normal')buffer.push(line);
     else otherHtml+=`<p>${esc(line)}</p>`;
   }
   flush();
-  return otherHtml+daphneHtml+studyHtml;
+  const lettersHtml=LETTER_ORDER.map(k=>letterHtmlMap[k]||'').join('');
+  return otherHtml+lettersHtml+studyHtml;
 }
 
 function lazyFrameHtml(id){
@@ -204,6 +213,8 @@ async function init(){
   }
   const displayName=studentKey.charAt(0).toUpperCase()+studentKey.slice(1);
   const grade=studentGradeMap[studentKey];
+  const surname=(typeof studentSurnameMap!=='undefined'&&studentSurnameMap[studentKey])?studentSurnameMap[studentKey]:'';
+  const fullName=surname?`${displayName} ${surname}`:displayName;
   const myWorks=works.filter(w=>w.student.toLowerCase()===studentKey);
 
   const {files,error}=await loadFileList(['days']);
@@ -222,8 +233,8 @@ async function init(){
   if(avatarFile)avatarUrl=avatarFile;
 
   document.querySelector('#profileHead').innerHTML=`
-    ${avatarUrl?`<img src="${avatarUrl}" class="profile-avatar" alt="${displayName}">`:`<div class="profile-avatar">${displayName[0]}</div>`}
-    <div><h1 class="profile-name">${displayName}${grade?`<span class="grade-tag">${grade}</span>`:''}</h1><div class="profile-stats" id="profileStats"></div></div>
+    ${avatarUrl?`<img src="${avatarUrl}" class="profile-avatar" alt="${fullName}">`:`<div class="profile-avatar">${displayName[0]}</div>`}
+    <div style="flex:1;min-width:220px"><h1 class="profile-name">${fullName}${grade?`<span class="grade-tag">${grade}</span>`:''}</h1><div class="profile-stats" id="profileStats"></div></div>
   `;
   document.querySelector('#tabs').style.display='flex';
 
@@ -254,13 +265,15 @@ async function init(){
   }
   const reflectionGrid=document.querySelector('#reflectionGrid');
   if(reflectionEntries.length){
-    reflectionGrid.innerHTML=reflectionEntries.map(r=>`<article class="reflection-card">${r.photo?`<img src="${r.photo}" alt="${displayName}">`:''}<div class="reflection-body"><div class="day-tag">${formatDayTitle(r.folder)}</div><p class="reflection-text">${r.text.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}</p></div></article>`).join('');
+    reflectionGrid.innerHTML=reflectionEntries.map(r=>`<article class="reflection-card">${r.photo?`<img src="${r.photo}" alt="${fullName}">`:''}<div class="reflection-body"><div class="day-tag">${formatDayTitle(r.folder)}</div><p class="reflection-text">${r.text.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}</p></div></article>`).join('');
   }else{
     reflectionGrid.innerHTML='<div class="reflection-empty">目前還沒有心得紀錄。</div>';
   }
 
   // stats
-  document.querySelector('#profileStats').textContent=`${myWorks.length} 支影片 · ${reflectionEntries.length} 篇心得`;
+  const filmWord=myWorks.length===1?'film':'films';
+  const journalWord=reflectionEntries.length===1?'reflection':'reflections';
+  document.querySelector('#profileStats').textContent=`In 2026, I picked up a camera, made ${myWorks.length} ${filmWord}, shared ${reflectionEntries.length} ${journalWord}, and pushed myself a little further every single day. This was my Melbourne story.`;
 
   // about
   const aboutFile=files.find(p=>p.toLowerCase()===`about/${studentKey}.txt`);
@@ -271,7 +284,7 @@ async function init(){
   const {aboutPart,teacherPart:teacherFromAbout}=splitAboutAndTeacher(aboutRaw);
   let aboutText=aboutPart;
   if(!aboutText){
-    aboutText=`${displayName}${grade?`（${grade}）`:''} 參與了這趟墨爾本遊留學，完成了 ${myWorks.length} 支自製影片與 ${reflectionEntries.length} 篇每日心得。點上方分頁可以瀏覽所有作品、心得與照片。`;
+    aboutText=`${fullName}${grade?`（${grade}）`:''} 參與了這趟墨爾本遊留學，完成了 ${myWorks.length} 支自製影片與 ${reflectionEntries.length} 篇每日心得。點上方分頁可以瀏覽所有作品、心得與照片。`;
   }
   document.querySelector('#aboutText').innerHTML=renderRichText(aboutText);
   document.querySelectorAll('#panel-about .sk-line').forEach(el=>el.style.display='none');
