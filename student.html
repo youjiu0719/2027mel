@@ -87,7 +87,21 @@ function renderRichText(text){
   }).filter(Boolean).join('');
 }
 
-const params=new URLSearchParams(location.search);
+// 這些標題一旦出現在 about/{name}.txt 裡，這個標題(含)之後的內容就會自動分流到「Message from teacher」分頁，
+// 不會留在 About 分頁。之後有新的教師心得標題，把它加進這個清單即可。
+const TEACHER_HEADINGS=['後續學習建議','message from daphne','message from teacher'];
+function splitAboutAndTeacher(text){
+  if(!text)return{aboutPart:'',teacherPart:''};
+  const lines=text.split('\n');
+  let idx=-1;
+  for(let i=0;i<lines.length;i++){
+    const m=lines[i].trim().match(/^[｜|](.+)[｜|]$/);
+    if(m&&TEACHER_HEADINGS.includes(m[1].trim().toLowerCase()))
+    {idx=i;break;}
+  }
+  if(idx===-1)return{aboutPart:text.trim(),teacherPart:''};
+  return{aboutPart:lines.slice(0,idx).join('\n').trim(),teacherPart:lines.slice(idx).join('\n').trim()};
+}
 const studentKey=(params.get('name')||'').toLowerCase();
 
 function lazyFrameHtml(id){
@@ -186,10 +200,12 @@ async function init(){
 
   // about
   const aboutFile=files.find(p=>p.toLowerCase()===`about/${studentKey}.txt`);
-  let aboutText='';
+  let aboutRaw='';
   if(aboutFile){
-    try{const r=await fetch(aboutFile,{cache:'no-store'});if(r.ok)aboutText=(await r.text()).trim();}catch(e){}
+    try{const r=await fetch(aboutFile,{cache:'no-store'});if(r.ok)aboutRaw=(await r.text()).trim();}catch(e){}
   }
+  const {aboutPart,teacherPart:teacherFromAbout}=splitAboutAndTeacher(aboutRaw);
+  let aboutText=aboutPart;
   if(!aboutText){
     aboutText=`${displayName}${grade?`（${grade}）`:''} 參與了這趟墨爾本遊留學，完成了 ${myWorks.length} 支自製影片與 ${reflectionEntries.length} 篇每日心得。點上方分頁可以瀏覽所有作品、心得與照片。`;
   }
@@ -197,15 +213,16 @@ async function init(){
   document.querySelectorAll('#panel-about .sk-line').forEach(el=>el.style.display='none');
   document.querySelector('#aboutText').style.display='block';
 
-  // Message from teacher（原 Teacher's Notes + Daphne 的話，合併成同一分頁，靠｜標題｜自然分段）
+  // Message from teacher（合併兩個來源：about/{name}.txt 裡分流出來的教師內容 + feedback/{name}.txt）
   const feedbackFile=files.find(p=>p.toLowerCase()===`feedback/${studentKey}.txt`);
+  let feedbackRaw='';
   if(feedbackFile){
-    let feedbackText='';
-    try{const r=await fetch(feedbackFile,{cache:'no-store'});if(r.ok)feedbackText=(await r.text()).trim();}catch(e){}
-    if(feedbackText){
-      document.querySelector('#feedbackText').innerHTML=renderRichText(feedbackText);
-      document.querySelector('#tabFeedbackBtn').style.display='inline-flex';
-    }
+    try{const r=await fetch(feedbackFile,{cache:'no-store'});if(r.ok)feedbackRaw=(await r.text()).trim();}catch(e){}
+  }
+  const teacherText=[teacherFromAbout,feedbackRaw].filter(Boolean).join('\n\n');
+  if(teacherText){
+    document.querySelector('#feedbackText').innerHTML=renderRichText(teacherText);
+    document.querySelector('#tabFeedbackBtn').style.display='inline-flex';
   }
 }
 init();
