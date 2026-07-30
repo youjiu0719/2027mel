@@ -52,14 +52,25 @@ footer.footer{border-top:1px solid var(--line);padding:25px 0;color:var(--muted)
 .back-link{display:inline-block;margin:30px 0 10px;color:var(--muted);font-size:.92rem}.back-link:hover{color:var(--accent)}
 @media(max-width:700px){.film-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:480px){.film-grid{grid-template-columns:1fr}.profile-head{padding-top:110px}}
-.daphne-wrap{margin:26px 0;max-width:640px}
-.daphne-head{display:flex;align-items:center;gap:10px;margin-bottom:8px}
-.daphne-avatar{width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid var(--accent);background:var(--panel2)}
-.daphne-name{color:var(--accent);font-weight:800;font-size:.82rem;letter-spacing:.05em;text-transform:uppercase}
-.daphne-bubble{position:relative;background:var(--panel2);border:1px solid var(--line);border-radius:4px 20px 20px 20px;padding:18px 22px;color:#d9dcd7;margin-left:12px}
-.daphne-bubble::before{content:'';position:absolute;top:-7px;left:20px;width:13px;height:13px;background:var(--panel2);border-left:1px solid var(--line);border-top:1px solid var(--line);transform:rotate(45deg)}
-.daphne-bubble p{margin:0 0 12px;font-size:1rem;line-height:1.8}
-.daphne-bubble p:last-child{margin-bottom:0}
+.daphne-letter{max-width:640px;width:100%;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:30px 32px;position:relative;margin:10px 0 30px}
+.daphne-quote{font-size:2.8rem;color:#e8b04f;line-height:1;font-family:Georgia,serif;position:absolute;top:16px;left:22px;opacity:.55}
+.daphne-text{margin:22px 0 24px;padding-left:8px;color:#e3e5df;font-size:1.18rem;line-height:1.95;font-style:italic}
+.daphne-text p{margin:0 0 16px}
+.daphne-text p:last-child{margin-bottom:0}
+.daphne-foot{display:flex;align-items:center;gap:12px;border-top:1px solid var(--line);padding-top:16px}
+.daphne-avatar{width:40px;height:40px;border-radius:50%;object-fit:cover;background:#e8b04f}
+.daphne-foot span{color:var(--muted);font-size:.95rem}
+.study-box{max-width:640px;width:100%;margin:10px 0 30px;background:var(--panel2);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:0 14px 14px 0;padding:24px 28px}
+.study-label{color:var(--accent);font-weight:800;font-size:.82rem;letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px}
+.study-box p{color:#d9dcd7;font-size:1.1rem;line-height:1.9;margin:0 0 14px}
+.study-box p:last-child{margin-bottom:0}
+@media(max-width:700px){
+  .daphne-letter{padding:22px 20px}
+  .daphne-quote{font-size:2.2rem;top:12px;left:16px}
+  .daphne-text{font-size:1.05rem;margin-top:16px}
+  .study-box{padding:20px 20px}
+  .study-box p{font-size:1.02rem}
+}
 </style>
 </head>
 <body>
@@ -113,32 +124,37 @@ function splitAboutAndTeacher(text){
 const params=new URLSearchParams(location.search);
 const studentKey=(params.get('name')||'').toLowerCase();
 
-// 專門給 Message from teacher 分頁用：遇到「Message from Daphne」標題，把底下的段落包成對話泡泡；
-// 其他標題（例如學習建議）維持跟 renderRichText 一樣的一般樣式。
+// 專門給 Message from teacher 分頁用：
+// 「Message from Daphne」→ 書信卡片；「學習建議／後續學習建議」→ 專屬框框；其他標題維持一般樣式。
+// 兩種區塊會照 about/{name}.txt 裡實際寫的順序輸出，先寫哪個就先顯示哪個。
 function renderTeacherText(text){
   const esc=s=>s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+  const STUDY_HEADINGS=['學習建議','後續學習建議'];
   const lines=text.split('\n').map(l=>l.trim()).filter(Boolean);
-  let html='',inDaphne=false,daphneBuffer=[];
-  const flushDaphne=()=>{
-    if(daphneBuffer.length){
-      html+=`<div class="daphne-wrap"><div class="daphne-head"><img class="daphne-avatar" src="days/_avatar/daphne_avatar.jpg" alt="Daphne" onerror="this.style.display='none'"><span class="daphne-name">Message from Daphne</span></div><div class="daphne-bubble">${daphneBuffer.map(p=>`<p>${esc(p)}</p>`).join('')}</div></div>`;
+  let html='',mode='normal',buffer=[];
+  const flush=()=>{
+    if(mode==='daphne'&&buffer.length){
+      html+=`<div class="daphne-letter"><div class="daphne-quote">"</div><div class="daphne-text">${buffer.map(p=>`<p>${esc(p)}</p>`).join('')}</div><div class="daphne-foot"><img class="daphne-avatar" src="days/_avatar/daphne_avatar.jpg" alt="Daphne" onerror="this.style.display='none'"><span>— Daphne</span></div></div>`;
+    }else if(mode==='study'&&buffer.length){
+      html+=`<div class="study-box"><div class="study-label">學習建議</div>${buffer.map(p=>`<p>${esc(p)}</p>`).join('')}</div>`;
     }
-    daphneBuffer=[];inDaphne=false;
+    buffer=[];mode='normal';
   };
   for(const line of lines){
     if(/^[【\[].+[】\]]$/.test(line))continue;
     const m=line.match(/^[｜|](.+)[｜|]$/);
     if(m){
+      flush();
       const headingText=m[1].trim();
-      if(inDaphne)flushDaphne();
-      if(headingText.toLowerCase()==='message from daphne'){inDaphne=true;}
-      else{html+=`<div class="about-heading">${esc(headingText)}</div>`;}
+      if(headingText.toLowerCase()==='message from daphne')mode='daphne';
+      else if(STUDY_HEADINGS.includes(headingText))mode='study';
+      else html+=`<div class="about-heading">${esc(headingText)}</div>`;
       continue;
     }
-    if(inDaphne)daphneBuffer.push(line);
+    if(mode==='daphne'||mode==='study')buffer.push(line);
     else html+=`<p>${esc(line)}</p>`;
   }
-  if(inDaphne)flushDaphne();
+  flush();
   return html;
 }
 
