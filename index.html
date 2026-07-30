@@ -19,12 +19,13 @@
 <style>
 :root{--bg:#070807;--panel:#111311;--panel2:#171a17;--text:#f7f7f2;--muted:#a7aca6;--line:#2a2e2a;--accent:#d7ff68;--max:1220px}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font-family:"Noto Serif TC","PingFang TC","Microsoft JhengHei","Heiti TC",serif;line-height:1.55}a{color:inherit;text-decoration:none}button{font:inherit}.wrap{width:min(var(--max),calc(100% - 32px));margin:auto}
-.nav{position:fixed;z-index:20;top:0;left:0;right:0;background:linear-gradient(#070807ef,#07080700);padding:18px 0}.navin{position:relative;display:flex;align-items:center;justify-content:space-between}.brand{font-weight:850;letter-spacing:.08em}.navlinks{display:flex;gap:22px;font-size:.9rem;color:#d7dad5}.nav a:hover{color:var(--accent)}.navtoggle{display:none;background:none;border:1px solid var(--line);border-radius:8px;color:var(--text);font-size:1.2rem;width:38px;height:38px;line-height:1}
+.nav{position:fixed;z-index:20;top:0;left:0;right:0;background:linear-gradient(#070807ef,#07080700);padding:18px 0}.navin{position:relative;display:flex;align-items:center;justify-content:space-between}.brand{font-weight:850;letter-spacing:.08em}.navlinks{display:flex;gap:16px;font-size:.86rem;color:#d7dad5}.nav-en{font-size:.8em;color:var(--muted);margin-left:3px}.nav a:hover{color:var(--accent)}.nav a:hover .nav-en{color:var(--accent)}.navtoggle{display:none;background:none;border:1px solid var(--line);border-radius:8px;color:var(--text);font-size:1.2rem;width:38px;height:38px;line-height:1}
 .hero{min-height:92vh;display:grid;align-items:end;position:relative;overflow:hidden;padding:120px 0 72px;background:radial-gradient(circle at 72% 20%,#39442b 0,transparent 35%),linear-gradient(135deg,#11140f,#050605 70%)}.hero:after{content:"MELBOURNE";position:absolute;left:-1vw;bottom:-3vw;font-size:clamp(5rem,16vw,15rem);font-weight:900;letter-spacing:-.08em;color:#ffffff08;white-space:nowrap}.hero .eyebrow{color:var(--accent);font-weight:800;letter-spacing:.18em;font-size:.78rem;text-transform:uppercase}.hero h1{max-width:970px;margin:18px 0 18px;font-size:clamp(3.4rem,8.5vw,8rem);line-height:.91;letter-spacing:-.07em}.hero p{max-width:730px;color:#ced1cc;font-size:clamp(1rem,2vw,1.3rem)}.hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 20px;border-radius:999px;border:1px solid var(--line);background:#fff;color:#050605;font-weight:800}.btn.ghost{background:transparent;color:#fff}.btn:hover{border-color:var(--accent);transform:translateY(-1px)}
-section{padding:92px 0}.section-kicker{color:var(--accent);font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;font-weight:850}.section-title{font-size:clamp(2rem,5vw,4.6rem);letter-spacing:-.05em;line-height:1;margin:12px 0}.section-copy{max-width:650px;color:var(--muted);font-size:1.05rem}.film-toolbar{display:flex;justify-content:space-between;align-items:end;gap:18px;margin-bottom:30px}.filters{display:flex;gap:8px;flex-wrap:wrap}.filter{border:1px solid var(--line);border-radius:999px;background:transparent;color:#dfe2dd;padding:9px 14px;cursor:pointer}.filter.active,.filter:hover{background:var(--accent);border-color:var(--accent);color:#10120e}
+section{padding:92px 0}.section-kicker{color:var(--accent);font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;font-weight:850}.section-title{font-size:clamp(2rem,5vw,4.6rem);letter-spacing:-.05em;line-height:1;margin:12px 0}.section-copy{max-width:100%;color:var(--muted);font-size:1.05rem}.film-toolbar{display:flex;justify-content:space-between;align-items:end;gap:18px;margin-bottom:30px}.filters{display:flex;gap:8px;flex-wrap:wrap}.filter{border:1px solid var(--line);border-radius:999px;background:transparent;color:#dfe2dd;padding:9px 14px;cursor:pointer}.filter.active,.filter:hover{background:var(--accent);border-color:var(--accent);color:#10120e}
 .film-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.shorts-grid{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x proximity;padding-bottom:14px;scrollbar-width:none}.shorts-grid:hover{scrollbar-width:thin}.shorts-grid::-webkit-scrollbar{height:6px}.shorts-grid::-webkit-scrollbar-track{background:transparent}.shorts-grid::-webkit-scrollbar-thumb{background:transparent;border-radius:4px;transition:background .2s}.shorts-grid:hover::-webkit-scrollbar-thumb{background:var(--line)}.shorts-grid .film{flex:0 0 280px;scroll-snap-align:start}.guides-grid .film{flex:0 0 380px}.guides-grid .frame{aspect-ratio:16/9}.film{background:var(--panel);border:1px solid var(--line);border-radius:22px;overflow:hidden;transition:.25s}.film:hover{transform:translateY(-5px);border-color:#4e554e}.frame{position:relative;aspect-ratio:9/16;background:#000;cursor:pointer}.frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}.frame img{width:100%;height:100%;object-fit:cover;display:block;opacity:.75}.play-btn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:60px;height:60px;border-radius:50%;background:#000000b0;border:2px solid #ffffffcc;color:#fff;font-size:1.4rem;display:grid;place-items:center;cursor:pointer;padding-left:4px}.frame:hover .play-btn{background:var(--accent);color:#10120e;border-color:var(--accent)}.film-info{padding:18px}.film-meta{display:flex;justify-content:space-between;gap:8px;color:var(--muted);font-size:.82rem}.film-meta-avatar{align-items:center;justify-content:flex-start}.film-meta-avatar .avatar,.film-meta-avatar .avatar-photo{width:26px;height:26px;font-size:.78rem;flex-shrink:0}.film-meta-avatar strong{margin-left:8px}.film-meta-avatar span{margin-left:auto;color:var(--muted)}.film h3{font-size:1.35rem;margin:7px 0 4px}.film p{margin:0;color:var(--muted);font-size:.92rem}.film-showmore{text-align:center;margin-top:24px}.grade-tag{display:inline-block;font-size:.68rem;font-weight:700;color:var(--accent);border:1px solid var(--line);border-radius:999px;padding:2px 7px;vertical-align:middle;white-space:nowrap}
-#sitemap{padding-top:0}.sitemap-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:30px}.sitemap-card{display:block;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px;transition:.2s}.sitemap-card:hover{border-color:var(--accent);transform:translateY(-3px)}.sm-num{color:var(--accent);font-weight:800;font-size:.8rem}.sitemap-card h3{margin:10px 0 6px;font-size:1.15rem}.sitemap-card p{margin:0;color:var(--muted);font-size:.86rem}
+#sitemap{padding-top:0}.sitemap-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:30px}.sitemap-card{display:block;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px;transition:.2s}.sitemap-card:hover{border-color:var(--accent);transform:translateY(-3px)}.sitemap-card.featured{border-color:var(--accent)}.sm-icon{display:block;width:24px;height:24px;color:var(--accent);margin-bottom:10px}.sm-icon svg{width:100%;height:100%}.sm-num{color:var(--accent);font-weight:800;font-size:.8rem}.sitemap-card h3{margin:10px 0 6px;font-size:1.15rem}.sitemap-card p{margin:0;color:var(--muted);font-size:.86rem}
 .learning{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:#0c0e0c}.learning-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:35px}.learn{min-height:245px;padding:25px;border-radius:20px;background:linear-gradient(150deg,#181c17,#101210);border:1px solid var(--line);display:flex;flex-direction:column;justify-content:space-between}.learn .num{color:var(--accent);font-weight:850}.learn h3{font-size:1.7rem;margin:0 0 7px}.learn p{color:var(--muted);margin:0}.statement{font-size:clamp(1.1rem,2.2vw,1.4rem);line-height:1.5;letter-spacing:-.01em;max-width:750px;margin:0;color:var(--muted)}.statement em{color:var(--accent);font-style:normal}
+.craft{background:#0c0e0c}.craft-note{margin-top:40px;color:var(--muted);font-size:.78rem}.craft-note p{margin:0}.craft-note p+p{margin-top:8px}.timeline{position:relative;margin-top:64px;--progress:0}.timeline-line{position:absolute;left:50%;transform:translateX(-50%);top:6px;bottom:6px;width:1px;background:var(--line)}.timeline-progress{position:absolute;left:50%;transform:translateX(-50%);top:6px;width:1px;height:calc(var(--progress) * (100% - 12px));background:var(--accent);transition:height .12s linear}.t-item{position:relative;display:grid;grid-template-columns:1fr 72px 1fr;column-gap:28px;align-items:start;padding:0 0 60px 0;opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}.t-item.in-view{opacity:1;transform:translateY(0)}.t-item:last-child{padding-bottom:0}.t-dot{grid-column:2;position:relative;z-index:1;width:72px;height:72px;border-radius:50%;background:var(--panel);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--accent);transition:transform .3s ease,border-color .3s ease;will-change:transform}.t-dot svg{width:28px;height:28px;transition:transform .3s ease}.t-dot .dot-num{position:absolute;bottom:-6px;right:-6px;background:var(--bg);border:1px solid var(--line);border-radius:999px;font-size:.64rem;padding:2px 6px;color:var(--accent);font-weight:800;line-height:1}.t-item:hover .t-dot{border-color:var(--accent);transform:perspective(600px) rotateY(8deg) translateZ(6px)}.t-item:hover .t-dot svg{transform:scale(1.1)}.t-body{grid-column:3;background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:26px 28px;transition:transform .3s ease,border-color .3s ease;will-change:transform}article.t-item:nth-of-type(2n) .t-body{grid-column:1}.t-item:hover .t-body{border-color:#4e554e;transform:translateY(-3px)}.t-tag{color:var(--accent);font-size:.74rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase}.t-body h3{margin:8px 0 8px;font-size:1.4rem}.t-body p{margin:0;color:#d9dcd7;font-size:.97rem;max-width:100%}.t-body p+p{margin-top:10px}.t-quote{margin-top:14px!important;color:var(--muted);font-size:.88rem;font-style:italic}.t-note{margin-top:14px!important;color:var(--muted);font-size:.78rem}
 .bts-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:18px;margin-top:34px}.bts-grid-nop{grid-template-columns:1fr 1fr}.bts-feature,.bts-stack article,.bts-wide article{position:relative;overflow:hidden;border-radius:24px;border:1px solid var(--line);background:var(--panel)}.bts-feature{height:420px}.bts-grid-nop .bts-feature{height:300px}.bts-feature img,.bts-stack img,.bts-wide img{width:100%;height:100%;object-fit:contain;background:#000;display:block}.overlay{position:absolute;inset:auto 0 0;padding:60px 25px 20px;background:linear-gradient(transparent,#070807ed)}.overlay small{color:var(--accent);font-weight:800;letter-spacing:.12em}.overlay h3{font-size:1.5rem;margin:6px 0}.overlay p{margin:0;color:#d4d7d2;font-size:.92rem}.bts-stack{display:grid;gap:18px}.bts-stack article{height:220px}.bts-wide{margin-top:18px}.bts-wide article{height:200px}.bts-placeholder{display:flex;align-items:center;justify-content:center;background:var(--panel2)}.bts-placeholder .reflection-empty{border:none;text-align:center}
 .creators{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:30px}.creator{display:block;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:20px;transition:.2s}.creator:hover{border-color:var(--accent);transform:translateY(-3px)}.avatar{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:#111;font-weight:900}.avatar-photo{width:44px;height:44px;border-radius:50%;object-fit:cover;display:block}.creator h3{margin:14px 0 3px}.creator p{margin:0;color:var(--muted);font-size:.88rem}.creator strong{display:block;margin-top:14px;color:#e8ebe6;font-size:.82rem}.creator .view-more{display:block;margin-top:14px;color:var(--accent);font-size:.8rem;font-weight:700}
 .final{padding:110px 0 130px;text-align:center;background:radial-gradient(circle at 50% 30%,#27301f,transparent 40%)}.final h2{font-size:clamp(2.5rem,7vw,6.5rem);line-height:.98;letter-spacing:-.065em;margin:0 auto 24px;max-width:1000px}.final p{color:var(--muted);font-size:1.1rem}.footer{border-top:1px solid var(--line);padding:25px 0;color:var(--muted);font-size:.83rem}.footer .wrap{display:flex;justify-content:space-between;gap:20px}
@@ -44,22 +45,24 @@ section{padding:92px 0}.section-kicker{color:var(--accent);font-size:.78rem;lett
 .highlights-grid{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x proximity;padding-bottom:14px;scrollbar-width:none;margin-top:34px}.highlights-grid:hover{scrollbar-width:thin}.highlights-grid::-webkit-scrollbar{height:6px}.highlights-grid::-webkit-scrollbar-track{background:transparent}.highlights-grid::-webkit-scrollbar-thumb{background:transparent;border-radius:4px;transition:background .2s}.highlights-grid:hover::-webkit-scrollbar-thumb{background:var(--line)}.highlight-card{position:relative;overflow:hidden;border-radius:18px;border:1px solid var(--line);background:var(--panel);flex:0 0 260px;aspect-ratio:4/5;scroll-snap-align:start}.highlight-card img{width:100%;height:100%;object-fit:cover;display:block}.highlight-card .cap{position:absolute;inset:auto 0 0;padding:34px 14px 12px;background:linear-gradient(transparent,#070807f0);color:#fff;font-size:.86rem;line-height:1.4}
 @media(max-width:920px){.film-grid{grid-template-columns:repeat(2,1fr)}.learning-grid,.creators{grid-template-columns:repeat(2,1fr)}.bts-grid{grid-template-columns:1fr}.reflection-card{flex:0 0 260px}.bts-feature{height:320px}.navtoggle{display:block}.navlinks{display:none;position:absolute;top:calc(100% + 14px);left:0;right:0;background:#0c0e0cf7;border:1px solid var(--line);border-radius:14px;flex-direction:column;gap:0;padding:8px}.navlinks.open{display:flex}.navlinks a{padding:12px 14px;border-radius:8px}.navlinks a:active,.navlinks a:hover{background:#171a17}.highlight-card{flex:0 0 220px}.sitemap-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:560px){.hero{min-height:86vh}section{padding:52px 0}.film-grid{grid-template-columns:repeat(2,1fr);gap:10px}.film h3{font-size:1.05rem}.film p{font-size:.82rem}.film-meta-avatar{flex-wrap:wrap;row-gap:4px}.film-meta-avatar .avatar,.film-meta-avatar .avatar-photo{width:20px;height:20px;font-size:.68rem}.film-meta-avatar strong{font-size:.85rem;margin-left:6px}.film-meta-avatar span{margin-left:32px;width:100%;font-size:.72rem}.grade-tag{font-size:.62rem;padding:1px 6px}.reflection-card{flex:0 0 82vw}.day-head{align-items:flex-start;flex-direction:column}.learning-grid,.creators{grid-template-columns:1fr}.film-toolbar{align-items:flex-start;flex-direction:column}.bts-feature{height:240px}.bts-stack article{height:180px}.footer .wrap{flex-direction:column}.highlight-card{flex:0 0 68vw}.sitemap-grid{grid-template-columns:1fr}.guides-grid .film{flex:0 0 86vw}}
+@media(max-width:820px){.timeline-line,.timeline-progress{left:26px;transform:none}.t-item{grid-template-columns:52px 1fr;column-gap:18px}.t-dot{grid-column:1;width:52px;height:52px}.t-dot svg{width:22px;height:22px}.t-body{grid-column:2;padding:20px 20px}article.t-item:nth-of-type(2n) .t-body{grid-column:2}.t-body h3{font-size:1.2rem}}
+@media(prefers-reduced-motion:reduce){.t-item{opacity:1;transform:none;transition:none}}
 /* Fill Behind the Films cards without letterboxing. */
 .bts-feature img,.bts-stack img,.bts-wide img{object-fit:cover;object-position:center}
 </style>
 </head>
 <body>
-<nav class="nav"><div class="wrap navin"><a class="brand" href="#top">DALI STUDY</a><div class="navlinks" id="navlinks"><a href="#shorts">Daily Shorts</a><a href="#guides">Location Guides</a><a href="#highlights">Highlights</a><a href="#daysContainer">Journal</a><a href="#films">Films</a><a href="#learning">Learning</a><a href="#behind">Behind the Films</a><a href="#creators">Creators</a><a href="photos.html">Photo Gallery</a></div><button class="navtoggle" id="navToggle" aria-label="選單">☰</button></div></nav>
-<header class="hero" id="top"><div class="wrap"><div class="eyebrow">Melbourne · 2026 Student Showcase</div><h1>Every story begins with observation.</h1><p>觀察、思考、執行。學生從城市裡尋找素材，透過日記整理想法，再用英文旁白與剪輯完成自己的故事。</p><div class="hero-actions"><a class="btn" href="#films">▶ Watch the Films</a><a class="btn ghost" href="#behind">Behind the Films</a></div></div></header>
+<nav class="nav"><div class="wrap navin"><a class="brand" href="#top">DALI STUDY</a><div class="navlinks" id="navlinks"><a href="#shorts">每日短片<span class="nav-en">Daily Shorts</span></a><a href="#guides">景點導覽<span class="nav-en">Location Guides</span></a><a href="#highlights">精彩時刻<span class="nav-en">Highlights</span></a><a href="#daysContainer">每日心得<span class="nav-en">Journal</span></a><a href="#films">學生影片<span class="nav-en">Films</span></a><a href="#learning">學習理念<span class="nav-en">Learning</span></a><a href="#craft">剪輯功夫<span class="nav-en">The Craft</span></a><a href="#behind">幕後花絮<span class="nav-en">Behind the Films</span></a><a href="#creators">認識學生<span class="nav-en">Creators</span></a><a href="photos.html">相片下載<span class="nav-en">Photo Gallery</span></a></div><button class="navtoggle" id="navToggle" aria-label="選單">☰</button></div></nav>
+<header class="hero" id="top"><div class="wrap"><div class="eyebrow">Melbourne · 2026 Student Showcase</div><h1>Every story begins with observation.</h1><p>觀察、思考、執行。學生從城市裡尋找素材，透過日記整理想法，再用英文旁白與剪輯完成自己的故事。</p><div class="hero-actions"><a class="btn" href="#films">▶ Watch the Films</a><a class="btn ghost" href="photos.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;margin-right:6px;vertical-align:-3px"><rect x="3" y="6" width="14" height="12" rx="1.5"/><path d="M7 21h14V9"/><circle cx="8" cy="11" r="1.6"/></svg>相片下載 Photo Gallery</a><a class="btn ghost" href="#behind">Behind the Films</a></div></div></header>
 <section id="sitemap"><div class="wrap"><div class="section-kicker">Start Here</div><h2 class="section-title">What's on this page.</h2><div class="sitemap-grid">
-<a class="sitemap-card" href="#shorts"><span class="sm-num">01</span><h3>Daily Shorts</h3><p>老師拍攝、剪輯的每日行程官方短片</p></a>
-<a class="sitemap-card" href="#guides"><span class="sm-num">02</span><h3>Location Guides</h3><p>老師錄音講述景點背後的故事與知識</p></a>
-<a class="sitemap-card" href="#highlights"><span class="sm-num">03</span><h3>Trip Highlights</h3><p>精選的旅程瞬間，快速一覽整趟行程</p></a>
-<a class="sitemap-card" href="#daysContainer"><span class="sm-num">04</span><h3>Daily Journal</h3><p>每天的學生心得卡片，附上當天照片</p></a>
-<a class="sitemap-card" href="#films"><span class="sm-num">05</span><h3>Student Films</h3><p>學生自己拍攝、剪輯完成的作品影片</p></a>
-<a class="sitemap-card" href="#behind"><span class="sm-num">06</span><h3>Behind the Films</h3><p>幾張補充影片背後學習過程的照片</p></a>
-<a class="sitemap-card" href="#creators"><span class="sm-num">07</span><h3>Meet the Creators</h3><p>認識每一位參與創作的學生</p></a>
-<a class="sitemap-card" href="photos.html"><span class="sm-num">08</span><h3>Photo Gallery</h3><p>完整活動照片，可依日期／學生篩選並下載</p></a>
+<a class="sitemap-card" href="#shorts"><span class="sm-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 8.5l6 3.5-6 3.5z"/></svg></span><span class="sm-num">01</span><h3>Daily Shorts</h3><p>老師拍攝、剪輯的每日行程官方短片</p></a>
+<a class="sitemap-card" href="#guides"><span class="sm-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-7.2 7-12a7 7 0 1 0-14 0c0 4.8 7 12 7 12z"/><circle cx="12" cy="9" r="2.4"/></svg></span><span class="sm-num">02</span><h3>Location Guides</h3><p>老師錄音講述景點背後的故事與知識</p></a>
+<a class="sitemap-card featured" href="photos.html"><span class="sm-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="14" height="12" rx="1.5"/><path d="M7 21h14V9"/><circle cx="8" cy="11" r="1.6"/><path d="M4 16l3-3 3 2 3-3 3 2"/></svg></span><span class="sm-num">03</span><h3>相片下載 Photo Gallery</h3><p>完整活動照片，可依日期／學生篩選並下載</p></a>
+<a class="sitemap-card" href="#highlights"><span class="sm-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2 5.5L19 10l-5 3 1 6-3-3.5L9 19l1-6-5-3 5-1.5z"/></svg></span><span class="sm-num">04</span><h3>Trip Highlights</h3><p>精選的旅程瞬間，快速一覽整趟行程</p></a>
+<a class="sitemap-card" href="#daysContainer"><span class="sm-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="1.5"/><path d="M9 8h6M9 12h6M9 16h4"/></svg></span><span class="sm-num">05</span><h3>Daily Journal</h3><p>每天的學生心得卡片，附上當天照片</p></a>
+<a class="sitemap-card" href="#films"><span class="sm-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9l1.5-4h13L20 9z"/><rect x="4" y="9" width="16" height="11" rx="1"/><path d="M7 9l1-3M12 9l1-3M17 9l1-3"/></svg></span><span class="sm-num">06</span><h3>Student Films</h3><p>學生自己拍攝、剪輯完成的作品影片</p></a>
+<a class="sitemap-card" href="#behind"><span class="sm-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.8 2.8M15.2 15.2 18 18M18 6l-2.8 2.8M8.8 15.2 6 18"/></svg></span><span class="sm-num">07</span><h3>Behind the Films</h3><p>幾張補充影片背後學習過程的照片</p></a>
+<a class="sitemap-card" href="#creators"><span class="sm-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/><circle cx="17" cy="9" r="2.4"/><path d="M15.5 14c2.4.3 4 2 4.5 4.2"/></svg></span><span class="sm-num">08</span><h3>Meet the Creators</h3><p>認識每一位參與創作的學生</p></a>
 </div></div></section>
 <main>
 <section id="shorts"><div class="wrap"><div class="section-kicker">Daily Shorts</div><h2 class="section-title">The official day-by-day recap.</h2><p class="section-copy">由帶隊老師拍攝、剪輯的每日行程短片，記錄整團當天的完整經歷。</p><div class="shorts-grid" id="shortsGrid"></div></div></section>
@@ -72,6 +75,119 @@ section{padding:92px 0}.section-kicker{color:var(--accent);font-size:.78rem;lett
 <section id="behind"><div class="wrap"><div class="section-kicker">Behind the Films</div><h2 class="section-title">A few moments behind the work.</h2><p class="section-copy">只留下少量、但真正能補充影片背後學習過程的照片。</p><div id="behindContainer"><div class="sk-grid"><div class="sk-feature skeleton"></div><div class="sk-feature skeleton"></div></div><div class="sk-feature skeleton" style="margin-top:18px;min-height:200px"></div><div class="sk-grid" style="margin-top:18px"><div class="sk-feature skeleton"></div><div class="sk-feature skeleton"></div></div></div></div></section>
 <section class="final"><div class="wrap"><h2>The greatest souvenir was a new way of seeing the world.</h2><p>這趟旅程帶回家的，不只是紀念品，而是一種觀察、思考與完成作品的能力。</p><a class="btn" href="#films">Watch Again</a></div></section>
 <section class="learning" id="learning"><div class="wrap"><div class="section-kicker">How We Learn</div><h2 class="section-title">Observe. Think. Create.</h2><p class="section-copy">老師先提供方向，學生從現場觀察出發；年紀較大的學生，也會延伸出不同想法。日記不是附加作業，而是把觀察整理成影片內容的重要工具。</p><div class="learning-grid"><article class="learn"><span class="num">01</span><div><h3>Observe</h3><p>停下來看見環境、人物、構圖與值得記錄的瞬間。</p></div></article><article class="learn"><span class="num">02</span><div><h3>Think</h3><p>透過日記整理今天發現了什麼，以及真正想說什麼。</p></div></article><article class="learn"><span class="num">03</span><div><h3>Collaborate</h3><p>傾聽、討論並整合不同想法，共同完成第一次合作任務。</p></div></article><article class="learn"><span class="num">04</span><div><h3>Create</h3><p>選擇素材、錄製英文旁白、安排節奏，完成自己的影片。</p></div></article></div></div></section>
+<section class="craft" id="craft"><div class="wrap">
+
+<div class="section-kicker">The Craft</div>
+<h2 class="section-title">看得見的 1 分鐘，看不見的好幾天。</h2>
+<p class="section-copy">剪輯不只是把片段接起來。從拍攝到完成，每支影片都會經過不同階段的整理與調整。</p>
+<p class="section-copy">以下記錄的是本次影片製作中實際接觸與練習的流程。每個人會依照年齡、能力、經驗與作品需求，以不同方式參與；有些步驟可以獨立完成，有些則會在老師示範、引導或協助下進行。</p>
+<p class="section-copy">這並不是要求每個人都要完美達成的製作標準，而是一段從觀察、嘗試到完成作品的學習過程。</p>
+
+<div class="timeline">
+<div class="timeline-line"></div>
+<div class="timeline-progress"></div>
+
+<article class="t-item tilt-item">
+<div class="t-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-2h6l2 2h3v11H4z"/><circle cx="12" cy="13" r="3.2"/></svg><span class="dot-num">01</span></div>
+<div class="t-body">
+<div class="t-tag">Capture</div>
+<h3>拍攝</h3>
+<p>在現場觀察並記錄值得留下的瞬間。</p>
+<p>實際拍下的素材，通常會比最後使用的更多。拍攝當下，重要的是嘗試從不同角度記錄人物、環境與活動過程，不錯過任何可能成為故事的畫面。</p>
+</div>
+</article>
+
+<article class="t-item tilt-item">
+<div class="t-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16l-6 7v6l-4 2v-8z"/></svg><span class="dot-num">02</span></div>
+<div class="t-body">
+<div class="t-tag">Select &amp; source</div>
+<h3>篩選與補充素材</h3>
+<p>重新觀看拍攝內容，挑選較清楚、適合或有意義的片段，並篩除重複、失焦或過於冗長的畫面。</p>
+<p>當自己拍攝的素材不足時，也會從老師整理的活動相簿中尋找適合的畫面，必要時再補充其他可使用的素材，重新整理成適合作品的內容。</p>
+<p class="t-quote">「光是決定要留下哪一段、選擇哪一張照片，就可能需要重看好幾次。」</p>
+</div>
+</article>
+
+<article class="t-item tilt-item">
+<div class="t-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h12M8 12h12M8 18h12"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/></svg><span class="dot-num">03</span></div>
+<div class="t-body">
+<div class="t-tag">Structure</div>
+<h3>安排順序</h3>
+<p>思考影片要從哪裡開始、中間放入哪些內容，以及最後如何結束。</p>
+<p>即使使用相同的片段，只要排列順序不同，也可能呈現出完全不同的感受與故事。</p>
+<p class="t-note">＊本次影片大致依循「開始、發展、結尾」的方式安排內容，部分作品也會嘗試運用起承轉合或三幕劇的概念。實際結構會依年齡、能力與作品內容彈性調整。</p>
+</div>
+</article>
+
+<article class="t-item tilt-item">
+<div class="t-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h3l2-6 4 12 3-9 2 3h4"/></svg><span class="dot-num">04</span></div>
+<div class="t-body">
+<div class="t-tag">Edit &amp; pace</div>
+<h3>剪接與節奏</h3>
+<p>先將選好的畫面依照順序排列，再剪除不需要的部分，整理出影片的大致節奏，完成初步版本。</p>
+<p>這個版本不一定完整，卻是後續加入旁白、音樂與其他細節的基礎。對第一次接觸剪輯的人來說，能完成基本排序與剪接，就是重要的學習成果。</p>
+</div>
+</article>
+
+<article class="t-item tilt-item">
+<div class="t-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg><span class="dot-num">05</span></div>
+<div class="t-body">
+<div class="t-tag">Write &amp; record</div>
+<h3>整理心得與錄製旁白</h3>
+<p>先回想當天的經歷，整理自己想分享的內容，再透過老師引導及 AI 工具協助，將想法整理成適合錄製的英文旁白。</p>
+<p>錄音的重點不是追求完美的發音或專業的語氣，而是實際開口，練習用英文表達自己的經驗與感受。</p>
+<p>每個人會依照年齡與能力，以適合自己的方式完成；有些人能夠自行錄製，有些則需要協助理解內容、修改文字或分段錄音。</p>
+</div>
+</article>
+
+<article class="t-item tilt-item">
+<div class="t-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4v5h5M20 20v-5h-5"/><path d="M5.5 15a8 8 0 0 0 13-3M18.5 9a8 8 0 0 0-13 3"/></svg><span class="dot-num">06</span></div>
+<div class="t-body">
+<div class="t-tag">Re-edit</div>
+<h3>依旁白調整畫面</h3>
+<p>旁白加入後，再重新檢查畫面與聲音是否搭配。</p>
+<p>哪些片段需要配合旁白微調、哪些地方需要補充畫面、哪些段落應該縮短，都會在這個階段處理。較複雜的調整則會由老師協助完成。</p>
+</div>
+</article>
+
+<article class="t-item tilt-item">
+<div class="t-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="10" height="10" rx="1"/><rect x="11" y="9" width="10" height="10" rx="1"/></svg><span class="dot-num">07</span></div>
+<div class="t-body">
+<div class="t-tag">Transitions</div>
+<h3>轉場與畫面銜接</h3>
+<p>依照作品需要，在不同段落之間加入適合的轉場效果，讓畫面銜接更自然，也讓整支影片的節奏更有變化。</p>
+<p>轉場並不是越多越好，學習判斷何時需要效果、何時保持簡單，也是剪輯過程的一部分。</p>
+</div>
+</article>
+
+<article class="t-item tilt-item">
+<div class="t-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l10-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="16" cy="16" r="3"/></svg><span class="dot-num">08</span></div>
+<div class="t-body">
+<div class="t-tag">Music</div>
+<h3>配樂</h3>
+<p>挑選適合作品氣氛的背景音樂，並調整音量，讓旁白能夠清楚被聽見，同時利用音樂襯托畫面的情緒與節奏。</p>
+<p>部分音樂選擇、音量平衡與細節調整，會由老師協助確認。</p>
+</div>
+</article>
+
+<article class="t-item tilt-item">
+<div class="t-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0-4-4m4 4 4-4"/><path d="M4 17v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg><span class="dot-num">09</span></div>
+<div class="t-body">
+<div class="t-tag">Export &amp; review</div>
+<h3>輸出與確認</h3>
+<p>影片輸出後，會再從頭到尾重新檢查一次，確認畫面、聲音、旁白與字幕是否需要調整，完成最後確認後才正式定稿。</p>
+<p>有些作品會經過多次修改，有些則保留較自然、尚未完全成熟的表達。這些不完美，也真實記錄了當下的學習階段與成長過程。</p>
+</div>
+</article>
+
+</div>
+
+<div class="craft-note">
+<p>＊以上為本次影片製作所接觸的一般流程。每個人的年齡、經驗、作品內容與參與程度不同，因此實際進行的方式也不盡相同。</p>
+<p>作品的重點並非追求專業製作或完全一致的成果，而是透過拍攝、挑選、整理、剪輯與表達，親自參與一支影片逐步形成的過程。</p>
+</div>
+
+</div></section>
 </main>
 <footer class="footer"><div class="wrap"><span>DALI STUDY · Melbourne Student Film Showcase 2026</span><span id="lastUpdated"></span><span>Observe · Think · Create</span></div></footer>
 <script src="data.js"></script>
@@ -245,6 +361,53 @@ async function renderLastUpdated(){
     document.querySelector('#lastUpdated').textContent=`最後更新：${label}`;
   }catch(e){}
 }
+function bindTiltCards(){
+  const items=document.querySelectorAll('.tilt-item');
+  const isCoarse=window.matchMedia('(pointer: coarse)').matches;
+  if(isCoarse)return;
+  items.forEach(item=>{
+    const body=item.querySelector('.t-body');
+    if(!body)return;
+    item.addEventListener('mousemove',e=>{
+      const r=body.getBoundingClientRect();
+      const x=(e.clientX-r.left)/r.width-.5;
+      const y=(e.clientY-r.top)/r.height-.5;
+      body.style.transform=`perspective(900px) rotateY(${x*4}deg) rotateX(${-y*4}deg) translateY(-3px)`;
+    });
+    item.addEventListener('mouseleave',()=>{body.style.transform='';});
+  });
+}
+function bindTimelineReveal(){
+  const items=document.querySelectorAll('.t-item');
+  if(!items.length)return;
+  const io=new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        entry.target.classList.add('in-view');
+        io.unobserve(entry.target);
+      }
+    });
+  },{threshold:0.2,rootMargin:'0px 0px -60px 0px'});
+  items.forEach(item=>io.observe(item));
+}
+function bindTimelineProgress(){
+  const el=document.querySelector('.timeline');
+  if(!el)return;
+  function update(){
+    const rect=el.getBoundingClientRect();
+    const vh=window.innerHeight;
+    const start=vh*0.8;
+    let progress=(start-rect.top)/rect.height;
+    progress=Math.max(0,Math.min(1,progress));
+    el.style.setProperty('--progress',progress);
+  }
+  window.addEventListener('scroll',()=>requestAnimationFrame(update));
+  window.addEventListener('resize',()=>requestAnimationFrame(update));
+  update();
+}
+bindTiltCards();
+bindTimelineReveal();
+bindTimelineProgress();
 initAll();
 renderLastUpdated();
 document.querySelector('#navToggle').onclick=()=>document.querySelector('#navlinks').classList.toggle('open');
