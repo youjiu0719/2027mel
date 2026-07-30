@@ -19,7 +19,7 @@ const officialShorts=[
 
 const works=[
 {student:'Amy',topic:'Vlog',title:'Melbourne Breakfast Vlog',id:'WWfKFiqpOpk',desc:'親手將 Nutella 塗上吐司並完成烘烤，用簡單的步驟記錄旅途中準備早餐的日常。',verified:true},
-{student:'Amy',topic:'Media',title:'ACMI',id:'ZeOrZwx5vco',desc:'從抵達 ACMI 開始，透過遊戲、影像作品、燈光裝置與互動體驗，記錄她在展覽中的探索過程。',verified:true},
+{student:'Amy',topic:'Media',title:'ACMI',id:'2Mil08ISxK0',desc:'從抵達 ACMI 開始，透過遊戲、影像作品、燈光裝置與互動體驗，記錄她在展覽中的探索過程。',verified:true},
 {student:'Amy',topic:'City',title:'State Library Victoria',id:'izSIXZX0-oU',desc:'以英文帶大家走進維多利亞州立圖書館，從宏偉的外觀、穹頂閱讀室到館藏畫作，介紹她眼中美麗的建築細節。',verified:true},
 {student:'Amy',topic:'Art',title:'NGV & Hosier Lane',id:'zO8M4di5G5I',desc:'先欣賞 Hosier Lane 色彩鮮明的街頭塗鴉，再走進 NGV 拍攝雕塑與畫作，記錄兩種截然不同的藝術風景。',verified:true},
 {student:'Eric',topic:'City',title:'Queen Victoria Market',id:'-CYxembBuyQ',desc:'原本計畫在市場購買袋鼠肉作為晚餐，詢問攤商後因沒有現貨改買魚，最後回到住處親自煎魚完成料理。',verified:true},
