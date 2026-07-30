@@ -54,8 +54,9 @@ footer.footer{border-top:1px solid var(--line);padding:25px 0;color:var(--muted)
 @media(max-width:480px){.film-grid{grid-template-columns:1fr}.profile-head{padding-top:110px}}
 .daphne-letter{max-width:1100px;width:100%;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:30px 32px;position:relative;margin:10px 0 30px}
 .daphne-quote{font-size:2.8rem;color:#e8b04f;line-height:1;font-family:Georgia,serif;position:absolute;top:16px;left:22px;opacity:.55}
-.daphne-text{margin:22px 0 24px;padding-left:8px;color:#e3e5df;font-size:1.18rem;line-height:1.95;font-style:italic}
-.daphne-text p{margin:0 0 16px}
+.daphne-lead{color:var(--text);font-weight:700;font-size:1.32rem;line-height:1.6;margin:26px 0 16px;padding-left:8px}
+.daphne-text{margin:0 0 24px;padding-left:8px;color:#d9dcd7;font-size:1.05rem;line-height:1.8}
+.daphne-text p{margin:0 0 14px}
 .daphne-text p:last-child{margin-bottom:0}
 .daphne-foot{display:flex;align-items:center;gap:12px;border-top:1px solid var(--line);padding-top:16px}
 .daphne-avatar{width:40px;height:40px;border-radius:50%;object-fit:cover;background:#e8b04f}
@@ -67,7 +68,8 @@ footer.footer{border-top:1px solid var(--line);padding:25px 0;color:var(--muted)
 @media(max-width:700px){
   .daphne-letter{padding:22px 20px}
   .daphne-quote{font-size:2.2rem;top:12px;left:16px}
-  .daphne-text{font-size:1.05rem;margin-top:16px}
+  .daphne-lead{font-size:1.12rem;margin-top:20px}
+  .daphne-text{font-size:.98rem}
   .study-box{padding:20px 20px}
   .study-box p{font-size:1.02rem}
 }
@@ -125,8 +127,14 @@ const params=new URLSearchParams(location.search);
 const studentKey=(params.get('name')||'').toLowerCase();
 
 // 專門給 Message from teacher 分頁用：
-// 「Message from Daphne」→ 書信卡片；「學習建議／後續學習建議」→ 專屬框框；其他標題維持一般樣式。
+// 「Message from Daphne」→ 書信卡片(第一句放大加粗當開場白，其餘正常段落)；
+// 「學習建議／後續學習建議」→ 專屬框框；其他標題維持一般樣式。
 // 顯示順序固定：Daphne 的話一律排最前面，學習建議排在後面，不受檔案裡實際打字順序影響。
+function splitLeadSentence(text){
+  const m=text.match(/^(.*?[。！？!?])([\s\S]*)$/);
+  if(m)return{lead:m[1],rest:m[2].trim()};
+  return{lead:text,rest:''};
+}
 function renderTeacherText(text){
   const esc=s=>s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
   const STUDY_HEADINGS=['學習建議','後續學習建議'];
@@ -134,7 +142,9 @@ function renderTeacherText(text){
   let mode='normal',buffer=[],daphneHtml='',studyHtml='',otherHtml='';
   const flush=()=>{
     if(mode==='daphne'&&buffer.length){
-      daphneHtml=`<div class="daphne-letter"><div class="daphne-quote">"</div><div class="daphne-text">${buffer.map(p=>`<p>${esc(p)}</p>`).join('')}</div><div class="daphne-foot"><img class="daphne-avatar" src="days/_avatar/daphne_avatar.jpg" alt="Daphne" onerror="this.style.display='none'"><span>— Daphne</span></div></div>`;
+      const{lead,rest}=splitLeadSentence(buffer[0]);
+      const bodyParas=(rest?[rest]:[]).concat(buffer.slice(1));
+      daphneHtml=`<div class="daphne-letter"><div class="daphne-quote">"</div><p class="daphne-lead">${esc(lead)}</p><div class="daphne-text">${bodyParas.map(p=>`<p>${esc(p)}</p>`).join('')}</div><div class="daphne-foot"><img class="daphne-avatar" src="days/_avatar/daphne_avatar.jpg" alt="Daphne" onerror="this.style.display='none'"><span>— Daphne</span></div></div>`;
     }else if(mode==='study'&&buffer.length){
       studyHtml=`<div class="study-box"><div class="study-label">學習建議</div>${buffer.map(p=>`<p>${esc(p)}</p>`).join('')}</div>`;
     }
