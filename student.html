@@ -52,6 +52,14 @@ footer.footer{border-top:1px solid var(--line);padding:25px 0;color:var(--muted)
 .back-link{display:inline-block;margin:30px 0 10px;color:var(--muted);font-size:.92rem}.back-link:hover{color:var(--accent)}
 @media(max-width:700px){.film-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:480px){.film-grid{grid-template-columns:1fr}.profile-head{padding-top:110px}}
+.daphne-wrap{margin:26px 0;max-width:640px}
+.daphne-head{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.daphne-avatar{width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid var(--accent);background:var(--panel2)}
+.daphne-name{color:var(--accent);font-weight:800;font-size:.82rem;letter-spacing:.05em;text-transform:uppercase}
+.daphne-bubble{position:relative;background:var(--panel2);border:1px solid var(--line);border-radius:4px 20px 20px 20px;padding:18px 22px;color:#d9dcd7;margin-left:12px}
+.daphne-bubble::before{content:'';position:absolute;top:-7px;left:20px;width:13px;height:13px;background:var(--panel2);border-left:1px solid var(--line);border-top:1px solid var(--line);transform:rotate(45deg)}
+.daphne-bubble p{margin:0 0 12px;font-size:1rem;line-height:1.8}
+.daphne-bubble p:last-child{margin-bottom:0}
 </style>
 </head>
 <body>
@@ -104,6 +112,35 @@ function splitAboutAndTeacher(text){
 }
 const params=new URLSearchParams(location.search);
 const studentKey=(params.get('name')||'').toLowerCase();
+
+// 專門給 Message from teacher 分頁用：遇到「Message from Daphne」標題，把底下的段落包成對話泡泡；
+// 其他標題（例如學習建議）維持跟 renderRichText 一樣的一般樣式。
+function renderTeacherText(text){
+  const esc=s=>s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+  const lines=text.split('\n').map(l=>l.trim()).filter(Boolean);
+  let html='',inDaphne=false,daphneBuffer=[];
+  const flushDaphne=()=>{
+    if(daphneBuffer.length){
+      html+=`<div class="daphne-wrap"><div class="daphne-head"><img class="daphne-avatar" src="days/_avatar/daphne_avatar.jpg" alt="Daphne" onerror="this.style.display='none'"><span class="daphne-name">Message from Daphne</span></div><div class="daphne-bubble">${daphneBuffer.map(p=>`<p>${esc(p)}</p>`).join('')}</div></div>`;
+    }
+    daphneBuffer=[];inDaphne=false;
+  };
+  for(const line of lines){
+    if(/^[【\[].+[】\]]$/.test(line))continue;
+    const m=line.match(/^[｜|](.+)[｜|]$/);
+    if(m){
+      const headingText=m[1].trim();
+      if(inDaphne)flushDaphne();
+      if(headingText.toLowerCase()==='message from daphne'){inDaphne=true;}
+      else{html+=`<div class="about-heading">${esc(headingText)}</div>`;}
+      continue;
+    }
+    if(inDaphne)daphneBuffer.push(line);
+    else html+=`<p>${esc(line)}</p>`;
+  }
+  if(inDaphne)flushDaphne();
+  return html;
+}
 
 function lazyFrameHtml(id){
   return `<div class="frame" data-yt="${id}"><img src="https://img.youtube.com/vi/${id}/hqdefault.jpg" alt="Video thumbnail" loading="lazy"><button class="play-btn" aria-label="播放">▶</button></div>`;
@@ -222,7 +259,7 @@ async function init(){
   }
   const teacherText=[teacherFromAbout,feedbackRaw].filter(Boolean).join('\n\n');
   if(teacherText){
-    document.querySelector('#feedbackText').innerHTML=renderRichText(teacherText);
+    document.querySelector('#feedbackText').innerHTML=renderTeacherText(teacherText);
     document.querySelector('#tabFeedbackBtn').style.display='inline-flex';
   }
 }
