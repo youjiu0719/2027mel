@@ -102,6 +102,7 @@ function splitAboutAndTeacher(text){
   if(idx===-1)return{aboutPart:text.trim(),teacherPart:''};
   return{aboutPart:lines.slice(0,idx).join('\n').trim(),teacherPart:lines.slice(idx).join('\n').trim()};
 }
+const params=new URLSearchParams(location.search);
 const studentKey=(params.get('name')||'').toLowerCase();
 
 function lazyFrameHtml(id){
