@@ -60,15 +60,15 @@ footer.footer{border-top:1px solid var(--line);padding:25px 0;color:var(--muted)
 <div class="profile-head" id="profileHead"><div class="sk-avatar skeleton"></div><div style="flex:1"><div class="sk-line skeleton" style="width:180px;height:2.2rem;margin-bottom:10px"></div><div class="sk-line skeleton" style="width:260px"></div></div></div>
 <div class="tabs" id="tabs" style="display:none">
   <button class="tab-btn active" data-tab="about">About</button>
-  <button class="tab-btn" data-tab="feedback" id="tabFeedbackBtn" style="display:none">Teacher's Notes</button>
-  <button class="tab-btn" data-tab="videos">所有影片</button>
-  <button class="tab-btn" data-tab="reflections">全部心得</button>
+  <button class="tab-btn" data-tab="videos">學生作品</button>
+  <button class="tab-btn" data-tab="reflections">每日分享</button>
+  <button class="tab-btn" data-tab="feedback" id="tabFeedbackBtn" style="display:none">Message from teacher</button>
 </div>
 <main>
   <div class="tab-panel active" id="panel-about"><div class="sk-line skeleton" style="width:90%;margin-bottom:10px"></div><div class="sk-line skeleton" style="width:70%"></div><div class="about-text" id="aboutText" style="display:none"></div></div>
-  <div class="tab-panel" id="panel-feedback"><div class="about-text" id="feedbackText"></div></div>
   <div class="tab-panel" id="panel-videos"><div class="film-grid" id="videoGrid"></div></div>
   <div class="tab-panel" id="panel-reflections"><div class="reflection-grid" id="reflectionGrid"></div></div>
+  <div class="tab-panel" id="panel-feedback"><div class="about-text" id="feedbackText"></div></div>
 </main>
 </div>
 <div class="wrap"><a class="back-link" href="javascript:history.back()">← 返回上一頁</a></div>
@@ -79,10 +79,12 @@ footer.footer{border-top:1px solid var(--line);padding:25px 0;color:var(--muted)
 function renderRichText(text){
   return text.split('\n').map(l=>l.trim()).filter(Boolean).map(line=>{
     const esc=s=>s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+    // 純姓名方括號行(例如「【姓名】」),跟頁面上方已顯示的大名字重複,直接移除不顯示
+    if(/^[【\[].+[】\]]$/.test(line))return '';
     const m=line.match(/^[｜|](.+)[｜|]$/);
     if(m)return `<div class="about-heading">${esc(m[1])}</div>`;
     return `<p>${esc(line)}</p>`;
-  }).join('');
+  }).filter(Boolean).join('');
 }
 
 const params=new URLSearchParams(location.search);
@@ -195,7 +197,7 @@ async function init(){
   document.querySelectorAll('#panel-about .sk-line').forEach(el=>el.style.display='none');
   document.querySelector('#aboutText').style.display='block';
 
-  // teacher's notes
+  // Message from teacher（原 Teacher's Notes + Daphne 的話，合併成同一分頁，靠｜標題｜自然分段）
   const feedbackFile=files.find(p=>p.toLowerCase()===`feedback/${studentKey}.txt`);
   if(feedbackFile){
     let feedbackText='';
