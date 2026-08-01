@@ -61,11 +61,34 @@ main{padding-bottom:140px}
 .lightbox .lb-dl{position:absolute;bottom:24px;left:50%;transform:translateX(-50%)}
 .progress{position:fixed;inset:0;z-index:60;background:#000000cc;display:none;align-items:center;justify-content:center;color:#fff;font-size:1.1rem;text-align:center;padding:20px}
 .progress.show{display:flex}
+.lock-screen{position:fixed;inset:0;z-index:100;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:24px}
+.lock-screen.hidden{display:none}
+.lock-box{max-width:380px;width:100%;text-align:center;background:var(--panel2);border:1px solid var(--line);border-radius:20px;padding:36px 28px}
+.lock-icon{width:44px;height:44px;margin:0 auto 18px}
+.lock-box h2{font-size:1.3rem;margin-bottom:12px;color:var(--text)}
+.lock-desc{color:var(--muted);font-size:.88rem;line-height:1.6;margin-bottom:22px}
+.lock-box input{width:100%;text-align:center;font-size:1.6rem;letter-spacing:.3em;padding:12px;border-radius:12px;border:1px solid var(--line);background:#0e100e;color:var(--text);margin-bottom:14px}
+.lock-box input:focus{outline:none;border-color:var(--accent)}
+.lock-box .btn{width:100%}
+.lock-error{color:#ff8080;font-size:.84rem;margin-top:12px;display:none}
+.lock-error.show{display:block}
 footer.footer{border-top:1px solid var(--line);padding:25px 0;color:var(--muted);font-size:.83rem}
 @media(max-width:560px){.photo-grid{grid-template-columns:repeat(auto-fill,minmax(105px,1fr));gap:7px}}
 </style>
 </head>
 <body>
+<div class="lock-screen" id="lockScreen">
+  <div class="lock-box">
+    <div class="lock-icon">
+      <svg viewBox="0 0 48 48" fill="none" stroke="#d7ff68" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="10" y="20" width="28" height="20" rx="4"/><path d="M16 20v-6a8 8 0 0 1 16 0v6"/></svg>
+    </div>
+    <h2>相簿需要驗證</h2>
+    <p class="lock-desc">請輸入您孩子的生日（月日，4 碼），例如 5 月 20 日出生請輸入 <strong>0520</strong>，驗證正確即可查看照片。每次重新開啟頁面都需要再次輸入。</p>
+    <input type="tel" id="lockInput" inputmode="numeric" maxlength="4" placeholder="0520" autocomplete="off">
+    <button class="btn" id="lockSubmit">進入相簿</button>
+    <div class="lock-error" id="lockError">生日不正確，請再試一次。</div>
+  </div>
+</div>
 <nav class="nav"><div class="wrap navin"><a class="brand" href="index.html">DALI STUDY</a><div class="navlinks"><a href="index.html">Home</a></div></div></nav>
 <header class="top"><div class="wrap"><div class="eyebrow">Photo Gallery</div><h1>All the moments, in one place.</h1>
 <div class="steps">
@@ -273,6 +296,25 @@ document.querySelector('#lightbox').onclick=e=>{if(e.target.id==='lightbox')e.ta
 document.querySelector('#clearSel').onclick=()=>{selected.clear();document.querySelectorAll('.photo-item.selected').forEach(el=>el.classList.remove('selected'));updateSelBar();};
 document.querySelector('#downloadSel').onclick=downloadSelected;
 
-renderGallery();
+const VALID_BIRTHDAYS=['1007','0509','0703','1217','1024','0301','1203','0815'];
+function tryUnlock(){
+  const val=document.querySelector('#lockInput').value.trim();
+  const err=document.querySelector('#lockError');
+  if(VALID_BIRTHDAYS.includes(val)){
+    document.querySelector('#lockScreen').classList.add('hidden');
+    renderGallery();
+  }else{
+    err.classList.add('show');
+    document.querySelector('#lockInput').select();
+  }
+}
+document.querySelector('#lockSubmit').onclick=tryUnlock;
+document.querySelector('#lockInput').addEventListener('keydown',e=>{
+  if(e.key==='Enter')tryUnlock();
+});
+document.querySelector('#lockInput').addEventListener('input',()=>{
+  document.querySelector('#lockError').classList.remove('show');
+});
+
 </script>
 </body></html>
