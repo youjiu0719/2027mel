@@ -52,6 +52,22 @@ footer.footer{border-top:1px solid var(--line);padding:25px 0;color:var(--muted)
 .back-link{display:inline-block;margin:30px 0 10px;color:var(--muted);font-size:.92rem}.back-link:hover{color:var(--accent)}
 @media(max-width:700px){.film-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:480px){.film-grid{grid-template-columns:1fr}.profile-head{padding-top:110px}}
+.cert-gate{max-width:420px;margin:50px auto;text-align:center;border:1px solid var(--line);background:var(--panel);border-radius:18px;padding:36px 28px}
+.cert-gate-text{color:var(--muted);margin:0 0 18px;font-size:.98rem}
+.cert-gate-row{display:flex;gap:10px;justify-content:center}
+.cert-gate-row input{width:110px;text-align:center;font-size:1.2rem;letter-spacing:.15em;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--panel2);color:var(--text);font-family:inherit}
+.cert-gate-row input:focus{outline:none;border-color:var(--accent)}
+.cert-unlock-btn{padding:10px 20px;border-radius:10px;border:1px solid var(--accent);background:var(--accent);color:#10120e;font-weight:800}
+.cert-gate-error{color:#e07a5f;margin-top:14px;font-size:.88rem}
+.cert-content{max-width:640px;margin:20px auto 0;text-align:center}
+.cert-item{margin:0 0 44px}
+.cert-item:last-child{margin-bottom:0}
+.cert-item-label{color:var(--accent);font-weight:800;font-size:1.05rem;letter-spacing:.02em;margin-bottom:6px}
+.cert-item-caption{color:var(--muted);font-size:.88rem;margin-bottom:18px}
+.cert-preview{width:100%;border-radius:16px;border:1px solid var(--line);display:block;margin:0 auto 22px;background:var(--panel2)}
+.cert-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.cert-download-btn{padding:10px 22px;border-radius:999px;border:1px solid var(--line);color:var(--text);font-size:.92rem;display:inline-flex;align-items:center;gap:6px}
+.cert-download-btn:hover{border-color:var(--accent);color:var(--accent)}
 .daphne-letter{max-width:1100px;width:100%;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:30px 32px;position:relative;margin:10px 0 30px}
 .daphne-quote{font-size:2.8rem;color:var(--lc,#e8b04f);line-height:1;font-family:Georgia,serif;position:absolute;top:16px;left:22px;opacity:.55}
 .daphne-lead{color:var(--text);font-weight:700;font-size:1.32rem;line-height:1.6;margin:26px 0 16px;padding-left:8px}
@@ -84,12 +100,24 @@ footer.footer{border-top:1px solid var(--line);padding:25px 0;color:var(--muted)
   <button class="tab-btn" data-tab="videos">學生作品</button>
   <button class="tab-btn" data-tab="reflections">每日分享</button>
   <button class="tab-btn" data-tab="feedback" id="tabFeedbackBtn" style="display:none">Message from teacher</button>
+  <button class="tab-btn" data-tab="certificates" id="tabCertBtn" style="display:none">證照</button>
 </div>
 <main>
   <div class="tab-panel active" id="panel-about"><div class="sk-line skeleton" style="width:90%;margin-bottom:10px"></div><div class="sk-line skeleton" style="width:70%"></div><div class="about-text" id="aboutText" style="display:none"></div></div>
   <div class="tab-panel" id="panel-videos"><div class="film-grid" id="videoGrid"></div></div>
   <div class="tab-panel" id="panel-reflections"><div class="reflection-grid" id="reflectionGrid"></div></div>
   <div class="tab-panel" id="panel-feedback"><div class="about-text" id="feedbackText"></div></div>
+  <div class="tab-panel" id="panel-certificates">
+    <div class="cert-gate" id="certGate">
+      <p class="cert-gate-text">請輸入生日（4 碼，例如 0719）以檢視證照</p>
+      <div class="cert-gate-row">
+        <input type="text" id="certBirthdayInput" maxlength="4" inputmode="numeric" placeholder="MMDD">
+        <button class="cert-unlock-btn" id="certUnlockBtn">解鎖</button>
+      </div>
+      <p class="cert-gate-error" id="certGateError" style="display:none">生日不正確，請再試一次</p>
+    </div>
+    <div class="cert-content" id="certContent" style="display:none"></div>
+  </div>
 </main>
 </div>
 <div class="wrap"><a class="back-link" href="javascript:history.back()">← 返回上一頁</a></div>
@@ -217,7 +245,7 @@ async function init(){
   const fullName=surname?`${displayName} ${surname}`:displayName;
   const myWorks=works.filter(w=>w.student.toLowerCase()===studentKey);
 
-  const {files,error}=await loadFileList(['days']);
+  const {files,error}=await loadFileList(['days','certificates']);
   if(error){
     document.querySelector('#profileHead').innerHTML=`<div class="reflection-empty">抓取失敗：${error}</div>`;
     return;
@@ -300,6 +328,45 @@ async function init(){
   if(teacherText){
     document.querySelector('#feedbackText').innerHTML=renderTeacherText(teacherText);
     document.querySelector('#tabFeedbackBtn').style.display='inline-flex';
+  }
+
+  // 證照（有任一張才顯示分頁；需要輸入這位學生自己的生日 4 碼才能解鎖）
+  // 之後如果還有第三張證書，只要在這裡加一個項目就好。
+  const CERT_ITEMS=[
+    {key:'melbourne',label:'The University of Melbourne',caption:'2026 University Studies Immersion Program · Melbourne, Victoria'},
+    {key:'rmit',label:'RMIT University',caption:'2026 University Studies Immersion Program · Melbourne, Victoria'}
+  ];
+  const foundCerts=CERT_ITEMS.map(item=>{
+    const pdf=files.find(p=>p.toLowerCase()===`certificates/${studentKey}_${item.key}.pdf`);
+    const jpg=files.find(p=>p.toLowerCase()===`certificates/${studentKey}_${item.key}.jpg`)
+      ||files.find(p=>p.toLowerCase()===`certificates/${studentKey}_${item.key}.jpeg`);
+    return{...item,pdf,jpg};
+  }).filter(c=>c.pdf||c.jpg);
+  if(foundCerts.length){
+    document.querySelector('#tabCertBtn').style.display='inline-flex';
+    const unlock=()=>{
+      const val=document.querySelector('#certBirthdayInput').value.trim();
+      const expected=(typeof studentBirthdayMap!=='undefined')?studentBirthdayMap[studentKey]:null;
+      if(expected&&val===expected){
+        document.querySelector('#certGate').style.display='none';
+        const content=document.querySelector('#certContent');
+        content.style.display='block';
+        content.innerHTML=foundCerts.map(c=>`
+          <div class="cert-item">
+            <div class="cert-item-label">${c.label}</div>
+            <div class="cert-item-caption">${c.caption}</div>
+            ${c.jpg?`<img src="${c.jpg}" class="cert-preview" alt="${c.label} 證照預覽">`:''}
+            <div class="cert-actions">
+              ${c.pdf?`<a href="${c.pdf}" download class="cert-download-btn">下載 PDF</a>`:''}
+              ${c.jpg?`<a href="${c.jpg}" download class="cert-download-btn">下載 JPEG</a>`:''}
+            </div>
+          </div>`).join('');
+      }else{
+        document.querySelector('#certGateError').style.display='block';
+      }
+    };
+    document.querySelector('#certUnlockBtn').onclick=unlock;
+    document.querySelector('#certBirthdayInput').addEventListener('keydown',e=>{if(e.key==='Enter')unlock();});
   }
 }
 init();
