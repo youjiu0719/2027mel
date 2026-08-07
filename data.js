@@ -10,6 +10,17 @@ const knownStudents=['amy','eason','eric','frankie','lawrence','louis','phoebe',
 
 const studentGradeMap={phoebe:'G3',lawrence:'G3',louis:'G7',amy:'G7',eric:'G12',eason:'G11',sasa:'Uni Y1',frankie:'G8'};
 
+const studentBirthdayMap={
+  eason:'0703',
+  amy:'0301',
+  eric:'0509',
+  frankie:'1217',
+  lawrence:'1203',
+  louis:'1024',
+  phoebe:'0815',
+  sasa:'1007'
+};
+
 const officialShorts=[
 {title:'Queen Victoria Market',id:'rv_YN2nfF5w',desc:'穿梭市場攤位與人群之間，記錄 Queen Victoria Market 鮮活又日常的一面。'},
 {title:'First Day in Melbourne',id:'6iOlGmBeddU',desc:'從抵達、移動到第一次走進城市，記錄這趟墨爾本旅程正式展開的時刻。'},
